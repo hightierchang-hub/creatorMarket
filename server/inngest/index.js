@@ -100,19 +100,43 @@ const syncUserUpdation = inngest.createFunction(
 // checkout time in paymentController.js), so seller lookups use
 // transaction.ownerId directly.
 
+// ---------------------------------------------------------------------------
+// Payment notification emails
+// ---------------------------------------------------------------------------
+
 const notifyPaymentPending = inngest.createFunction(
   { id: "notify-payment-pending", triggers: [{ event: "payment/pending" }] },
   async ({ event }) => {
+    console.log("payment/pending event:", JSON.stringify(event, null, 2));
+
     const { transactionId } = event.data;
+
+    if (!transactionId) {
+      throw new Error(
+        `payment/pending event missing transactionId.\nEvent: ${JSON.stringify(
+          event.data,
+          null,
+          2
+        )}`
+      );
+    }
 
     const transaction = await prisma.transaction.findUnique({
       where: { id: transactionId },
       include: { listing: true },
     });
-    if (!transaction) return;
 
-    const buyer = await prisma.user.findUnique({ where: { id: transaction.userId } });
-    if (!buyer) return;
+    if (!transaction) {
+      throw new Error(`Transaction not found: ${transactionId}`);
+    }
+
+    const buyer = await prisma.user.findUnique({
+      where: { id: transaction.userId },
+    });
+
+    if (!buyer) {
+      throw new Error(`Buyer not found: ${transaction.userId}`);
+    }
 
     const { subject, html } = paymentPendingEmail({
       buyerName: buyer.name,
@@ -121,23 +145,47 @@ const notifyPaymentPending = inngest.createFunction(
       currency: transaction.currency,
     });
 
-    await sendEmail({ to: buyer.email, subject, html });
+    await sendEmail({
+      to: buyer.email,
+      subject,
+      html,
+    });
   }
 );
 
 const notifyPaymentSuccessful = inngest.createFunction(
   { id: "notify-payment-successful", triggers: [{ event: "payment/paid" }] },
   async ({ event }) => {
+    console.log("payment/paid event:", JSON.stringify(event, null, 2));
+
     const { transactionId } = event.data;
+
+    if (!transactionId) {
+      throw new Error(
+        `payment/paid event missing transactionId.\nEvent: ${JSON.stringify(
+          event.data,
+          null,
+          2
+        )}`
+      );
+    }
 
     const transaction = await prisma.transaction.findUnique({
       where: { id: transactionId },
       include: { listing: true },
     });
-    if (!transaction) return;
 
-    const buyer = await prisma.user.findUnique({ where: { id: transaction.userId } });
-    if (!buyer) return;
+    if (!transaction) {
+      throw new Error(`Transaction not found: ${transactionId}`);
+    }
+
+    const buyer = await prisma.user.findUnique({
+      where: { id: transaction.userId },
+    });
+
+    if (!buyer) {
+      throw new Error(`Buyer not found: ${transaction.userId}`);
+    }
 
     const { subject, html } = paymentSuccessfulEmail({
       buyerName: buyer.name,
@@ -146,23 +194,47 @@ const notifyPaymentSuccessful = inngest.createFunction(
       currency: transaction.currency,
     });
 
-    await sendEmail({ to: buyer.email, subject, html });
+    await sendEmail({
+      to: buyer.email,
+      subject,
+      html,
+    });
   }
 );
 
 const notifyListingSold = inngest.createFunction(
   { id: "notify-listing-sold", triggers: [{ event: "payment/paid" }] },
   async ({ event }) => {
+    console.log("payment/paid event:", JSON.stringify(event, null, 2));
+
     const { transactionId } = event.data;
+
+    if (!transactionId) {
+      throw new Error(
+        `payment/paid event missing transactionId.\nEvent: ${JSON.stringify(
+          event.data,
+          null,
+          2
+        )}`
+      );
+    }
 
     const transaction = await prisma.transaction.findUnique({
       where: { id: transactionId },
       include: { listing: true },
     });
-    if (!transaction) return;
 
-    const seller = await prisma.user.findUnique({ where: { id: transaction.ownerId } });
-    if (!seller) return;
+    if (!transaction) {
+      throw new Error(`Transaction not found: ${transactionId}`);
+    }
+
+    const seller = await prisma.user.findUnique({
+      where: { id: transaction.ownerId },
+    });
+
+    if (!seller) {
+      throw new Error(`Seller not found: ${transaction.ownerId}`);
+    }
 
     const { subject, html } = listingSoldEmail({
       sellerName: seller.name,
@@ -171,27 +243,50 @@ const notifyListingSold = inngest.createFunction(
       currency: transaction.currency,
     });
 
-    await sendEmail({ to: seller.email, subject, html });
+    await sendEmail({
+      to: seller.email,
+      subject,
+      html,
+    });
   }
 );
 
 const notifyAdminOnSale = inngest.createFunction(
   { id: "notify-admin-on-sale", triggers: [{ event: "payment/paid" }] },
   async ({ event }) => {
+    console.log("payment/paid event:", JSON.stringify(event, null, 2));
+
     const adminEmails = getAdminEmails();
-    if (adminEmails.length === 0) return; // no ADMIN_EMAILS configured
+    if (adminEmails.length === 0) return;
 
     const { transactionId } = event.data;
+
+    if (!transactionId) {
+      throw new Error(
+        `payment/paid event missing transactionId.\nEvent: ${JSON.stringify(
+          event.data,
+          null,
+          2
+        )}`
+      );
+    }
 
     const transaction = await prisma.transaction.findUnique({
       where: { id: transactionId },
       include: { listing: true },
     });
-    if (!transaction) return;
+
+    if (!transaction) {
+      throw new Error(`Transaction not found: ${transactionId}`);
+    }
 
     const [buyer, seller] = await Promise.all([
-      prisma.user.findUnique({ where: { id: transaction.userId } }),
-      prisma.user.findUnique({ where: { id: transaction.ownerId } }),
+      prisma.user.findUnique({
+        where: { id: transaction.userId },
+      }),
+      prisma.user.findUnique({
+        where: { id: transaction.ownerId },
+      }),
     ]);
 
     const { subject, html } = adminSaleNotificationEmail({
@@ -205,11 +300,13 @@ const notifyAdminOnSale = inngest.createFunction(
       sellerEmail: seller?.email,
     });
 
-    // Resend accepts an array for `to`, so admins all get it in one send.
-    await sendEmail({ to: adminEmails, subject, html });
+    await sendEmail({
+      to: adminEmails,
+      subject,
+      html,
+    });
   }
 );
-
 const functions = [
   syncUserCreation,
   syncUserDeletion,
