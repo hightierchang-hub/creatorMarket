@@ -1,0 +1,66 @@
+import "dotenv/config"; // MUST be first — loads .env before anything else
+
+import express from "express";
+import cors from "cors";
+import { clerkMiddleware } from '@clerk/express';
+import { serve } from "inngest/express";
+import { inngest, functions } from "./inngest/index.js";
+import listingRouter from "./routes/listingRoutes.js";
+import chatRouter from "./routes/chatRoutes.js";
+import adminRouter from "./routes/adminRoutes.js";
+import paymentRouter from "./routes/paymentRoutes.js";
+import { stripeWebhook } from "./controllers/paymentController.js";
+
+const app = express();
+
+const allowedOrigins = [
+  process.env.VITE_CLIENT_URL,
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:5175',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:5174',
+  'http://127.0.0.1:5175',
+].filter(Boolean);
+
+app.use(clerkMiddleware({ clockSkewInMs: 15000 }))
+
+// IMPORTANT: Stripe webhook signature verification needs the raw request
+// body, so this route MUST be registered before the global express.json()
+// below. Do not move this line down.
+app.post("/api/payment/stripe/webhook", express.raw({ type: "application/json" }), stripeWebhook);
+
+app.use(express.json());
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin) || /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
+app.use(clerkMiddleware({
+  publishableKey: process.env.CLERK_PUBLISHABLE_KEY,
+  secretKey: process.env.CLERK_SECRET_KEY,
+}));
+
+app.get("/", (req, res) => res.send("Server is live"));
+
+app.use("/api/inngest", serve({ client: inngest, functions }));
+app.use("/api/listing", listingRouter);
+app.use("/api/chat", chatRouter);
+app.use("/api/admin", adminRouter);
+app.use("/api/payment", paymentRouter);
+
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+
+export default app;
