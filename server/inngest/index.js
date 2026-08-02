@@ -96,9 +96,9 @@ const syncUserUpdation = inngest.createFunction(
 // one place that ever marks a transaction paid) emits "payment/paid", which
 // fans out to both the buyer (receipt) and the seller (sold notice).
 //
-// NOTE: Transaction does not carry its own ownerId - the seller is the
-// owner of the listing being sold, so seller lookups go through
-// transaction.listing.ownerId, not transaction.ownerId.
+// NOTE: Transaction.ownerId is the seller (copied from listing.ownerId at
+// checkout time in paymentController.js), so seller lookups use
+// transaction.ownerId directly.
 
 const notifyPaymentPending = inngest.createFunction(
   { id: "notify-payment-pending", triggers: [{ event: "payment/pending" }] },
@@ -161,7 +161,7 @@ const notifyListingSold = inngest.createFunction(
     });
     if (!transaction) return;
 
-    const seller = await prisma.user.findUnique({ where: { id: transaction.listing.ownerId } });
+    const seller = await prisma.user.findUnique({ where: { id: transaction.ownerId } });
     if (!seller) return;
 
     const { subject, html } = listingSoldEmail({
@@ -191,7 +191,7 @@ const notifyAdminOnSale = inngest.createFunction(
 
     const [buyer, seller] = await Promise.all([
       prisma.user.findUnique({ where: { id: transaction.userId } }),
-      prisma.user.findUnique({ where: { id: transaction.listing.ownerId } }),
+      prisma.user.findUnique({ where: { id: transaction.ownerId } }),
     ]);
 
     const { subject, html } = adminSaleNotificationEmail({
