@@ -168,10 +168,10 @@ const ManageListing = () => {
     <div className='min-h-screen py-6'>
       <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8'>
       <div className='mb-8'>
-        <h1 className= 'text-3xl font-bold text-gray-800'>
+        <h1 className= 'text-3xl font-bold text-gray-800 dark:text-gray-100'>
           {isEditing ? "Edit Listing" : "List Your Account"}
         </h1>
-        <p className='text-gray-600 mt-2'>
+        <p className='text-gray-600 dark:text-gray-400 mt-2'>
           {isEditing ? "Update your existing account listing" : "Create a mock listing to display your account info"}
         </p>
         </div>
@@ -234,11 +234,11 @@ const ManageListing = () => {
           {/* IMAGES */}
           {/* IMAGES */}
           <Section title='Screenshots & Proof'>
-            <div className='border-2 border-dashed border-gray-300 rounded-lg p-6 text-center'>
+            <div className='border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-6 text-center'>
                <input type='file' id='images' multiple accept='image/*' onChange={handleImageUpload} className='hidden'/>
-               <Upload className='w-12 h-12 text-gray-400 mx-auto mb-4'/>
-               <label htmlFor="images" className='px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer'>Choose Files</label>
-               <p className='text-sm text-gray-500 mt-2'>Upload screenshots or proof of account analytics</p>
+               <Upload className='w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4'/>
+               <label htmlFor="images" className='px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer'>Choose Files</label>
+               <p className='text-sm text-gray-500 dark:text-gray-400 mt-2'>Upload screenshots or proof of account analytics</p>
             </div>
             {formData.images.length > 0 && (
   <div className='grid grid-cols-2 md:grid-cols-4 gap-4 mt-4'>
@@ -255,7 +255,7 @@ const ManageListing = () => {
             )}
           </Section>
           <div className='flex justify-end gap-3 text-sm'>
-              <button onClick={()=> navigate(-1)} type="button" className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+              <button onClick={()=> navigate(-1)} type="button" className="px-6 py-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                 Cancel
               </button>
               <button type='submit' className='px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors'>
@@ -270,27 +270,27 @@ const ManageListing = () => {
 
 /*--- Common Elements ---*/
 const Section = ({ title, children }) => (
-  <div className='bg-white rounded-lg border border-gray-200 p-6 space-y-6'>
-    <h2 className='text-lg font-semibold text-gray-800'>{title}</h2>
+  <div className='bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-6 space-y-6'>
+    <h2 className='text-lg font-semibold text-gray-800 dark:text-gray-100'>{title}</h2>
     {children}
   </div>
 )
 
 const InputField = ({label, value, onChange, placeholder, type = 'text', required = false, min = null, max = null})=>(
   <div>
-    <label className='block text-sm font-medium text-gray-700 mb-2'>{label}</label>
+    <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>{label}</label>
     <input type={type} min={min} max={max} placeholder={placeholder} value={value ?? ''} onChange={(e)=>onChange(e.target.value)} 
-    className='w-full px-3 py-1.5 text-gray-600 border rounded-md focus:outline-none focus:ring-0 focus:border-indigo-500 
-    border-gray-300' required={required}/>
+    className='w-full px-3 py-1.5 text-gray-600 dark:text-gray-400 border rounded-md focus:outline-none focus:ring-0 focus:border-indigo-500 
+    border-gray-300 dark:border-gray-700' required={required}/>
   </div>
 )
 
 const SelectField = ({label, value, onChange, options, required = false}) => (
   <div>
-     <label className='block text-sm font-medium text-gray-700 mb-2'>{label}</label>
+     <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>{label}</label>
      <select value={value ?? ''} onChange={(e)=>onChange(e.target.value)}
-      className='w-full px-3 py-1.5 text-gray-600 border rounded-md focus:outline-none focus:ring-0 focus:border-indigo-500 
-    border-gray-300' required={required}>
+      className='w-full px-3 py-1.5 text-gray-600 dark:text-gray-400 border rounded-md focus:outline-none focus:ring-0 focus:border-indigo-500 
+    border-gray-300 dark:border-gray-700' required={required}>
         <option value="">Select...</option>
         {options.map((opt) => (
           <option key={opt} value={opt}>{opt}</option>
@@ -302,7 +302,7 @@ const SelectField = ({label, value, onChange, options, required = false}) => (
 const CheckboxField = ({label, checked, onChange, required = false}) => (
   <label className='flex items-center space-x-2 cursor_pointer'>
     <input type="checkbox" checked={checked ?? false} onChange={(e) => onChange(e.target.checked)} className='size-4' required={required}/>
-    <span className="text-sm text-gray-700">
+    <span className="text-sm text-gray-700 dark:text-gray-300">
       {label}
     </span>
   </label>
@@ -310,9 +310,9 @@ const CheckboxField = ({label, checked, onChange, required = false}) => (
 
 const TextAreaField = ({label, value, onChange, required = false})=>(
   <div>
-    <label className='block text-sm font-medium text-gray-700 mb-2'>{label}</label>
+    <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>{label}</label>
     <textarea rows={5} value={value ?? ''} onChange={(e) => onChange(e.target.value)} 
-    className='w-full px-3 py-1.5 text-gray-600 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 border-gray-300'
+    className='w-full px-3 py-1.5 text-gray-600 dark:text-gray-400 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 border-gray-300 dark:border-gray-700'
     required={required}/>
   </div>
 )

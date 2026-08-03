@@ -30,7 +30,7 @@ const WithdrawalDetail = ({ data, onClose }) => {
 
     return (
         <div className='fixed inset-0 bg-black/70 backdrop-blur z-100 flex items-center justify-center sm:p-4'>
-            <div className='bg-white sm:rounded-lg shadow-2xl w-full max-w-xl h-screen sm:h-[480px] flex flex-col'>
+            <div className='bg-white dark:bg-gray-900 sm:rounded-lg shadow-2xl w-full max-w-xl h-screen sm:h-[480px] flex flex-col'>
                 {/* Header */}
                 <div className='bg-gradient-to-r from-indigo-600 to-indigo-400 text-white p-4 sm:rounded-t-lg flex items-center justify-between'>
                     <div className='flex-1 min-w-0'>
@@ -45,47 +45,47 @@ const WithdrawalDetail = ({ data, onClose }) => {
                 </div>
 
                 {/* Body */}
-                <div className='flex-1 overflow-y-auto p-4 text-gray-700'>
+                <div className='flex-1 overflow-y-auto p-4 text-gray-700 dark:text-gray-300'>
                     <div className='grid grid-cols-2 gap-3'>
                         <div>
-                            <p className='text-sm text-gray-500'>Amount</p>
+                            <p className='text-sm text-gray-500 dark:text-gray-400'>Amount</p>
                             <p className='font-medium text-lg'>{currency}{data.amount.toLocaleString('en-IN')}</p>
                         </div>
                         <div>
-                            <p className='text-sm text-gray-500'>Requested At</p>
+                            <p className='text-sm text-gray-500 dark:text-gray-400'>Requested At</p>
                             <p className='font-medium'>{new Date(data.createdAt).toLocaleString('en-IN')}</p>
                         </div>
                     </div>
 
-                    <div className='mt-4 border-t border-gray-200 pt-3'>
+                    <div className='mt-4 border-t border-gray-200 dark:border-gray-800 pt-3'>
                         <h4 className='font-semibold'>Account Details</h4>
                         <div className='mt-2 flex flex-col gap-2'>
                             {data.account.length > 0 ? (
                                 data.account.map((field, index) => (
                                     <div key={index} className='w-full flex items-center gap-3 group'>
                                         <div className='min-w-0'>
-                                            <p className='text-sm text-gray-500'>{field.name}</p>
+                                            <p className='text-sm text-gray-500 dark:text-gray-400'>{field.name}</p>
                                             <p className='font-medium truncate'>{field.value}</p>
                                         </div>
-                                        <button onClick={() => copyToClipboard(field)} className='invisible group-hover:visible p-1 rounded hover:bg-gray-100' title={`Copy ${field.name}`}>
+                                        <button onClick={() => copyToClipboard(field)} className='invisible group-hover:visible p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800' title={`Copy ${field.name}`}>
                                             <CopyIcon className='w-4 h-4' />
                                         </button>
                                     </div>
                                 ))
                             ) : (
-                                <p className='text-sm text-gray-500'>No account info available.</p>
+                                <p className='text-sm text-gray-500 dark:text-gray-400'>No account info available.</p>
                             )}
                         </div>
                     </div>
 
-                    <div className='mt-4 border-t border-gray-200 pt-3'>
+                    <div className='mt-4 border-t border-gray-200 dark:border-gray-800 pt-3'>
                         <h4 className='font-semibold'>User Summary</h4>
-                        <div className='mt-2 text-sm text-gray-600'>
+                        <div className='mt-2 text-sm text-gray-600 dark:text-gray-400'>
                             <div className='flex items-center gap-3'>
                                 <img src={data.user?.image} alt={data.user?.name} className='w-10 h-10 rounded-full object-cover border' />
                                 <div className='min-w-0'>
                                     <p className='font-medium truncate'>{data.user?.name || '—'}</p>
-                                    <p className='truncate text-xs text-gray-500'>{data.user?.email || '—'}</p>
+                                    <p className='truncate text-xs text-gray-500 dark:text-gray-400'>{data.user?.email || '—'}</p>
                                 </div>
                             </div>
                         </div>
@@ -95,7 +95,7 @@ const WithdrawalDetail = ({ data, onClose }) => {
                 </div>
 
                 {/* Footer actions */}
-                {!data.isWithdrawn && <div className='p-4 border-t border-gray-200 flex items-center justify-end gap-2'>
+                {!data.isWithdrawn && <div className='p-4 border-t border-gray-200 dark:border-gray-800 flex items-center justify-end gap-2'>
                     <button onClick={markAsWithdrawn} className='text-sm bg-indigo-500 text-white font-medium py-2 px-4 rounded-md flex items-center gap-2'>
                         Mark as withdrawn
                     </button>

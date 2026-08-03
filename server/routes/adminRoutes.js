@@ -5,7 +5,7 @@ import { isAdmin, getDashboard, getAllListings, changeStatus, getAllUnverifiedLi
 
 const adminRouter = express.Router();
 
-adminRouter.get("/admin", protect, protectAdmin, isAdmin);
+adminRouter.get("/admin", protect, isAdmin);
 adminRouter.get("/dashboard", protect, protectAdmin, getDashboard);
 adminRouter.get("/all-listings", protect, protectAdmin, getAllListings);
 adminRouter.put("/change-status/:listingId", protect, protectAdmin, changeStatus);

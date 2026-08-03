@@ -51,7 +51,7 @@ const dispatch = useDispatch()
     }
   return (
     <div className='fixed inset-0 bg-black/70 backdrop-blur bg-opacity-50 flex items-center justify-center sm:p-4'>
-        <div className='bg-white sm:rounded-lg shadow-2xl w-full max-w-lg h-screen sm:h-auto flex flex-col'>
+        <div className='bg-white dark:bg-gray-900 sm:rounded-lg shadow-2xl w-full max-w-lg h-screen sm:h-auto flex flex-col'>
             {/* Header */}
             <div className='bg-linear-to-r from-indigo-600 to-indigo-400 text-white p-4 sm:rounded-t-lg relative flex items-center'>
                 <h3 className='font-semibold text-lg flex-1'>Withdraw Funds</h3>
@@ -63,14 +63,14 @@ const dispatch = useDispatch()
             {/* Form */}
             <form onSubmit={handleSubmission} className='flex flex-col items-start gap-4 p-4 overflow-y-scroll'>
                 <div className='grid grid-cols-[2fr_3fr_1fr] items-center gap-2'>
-                    Amount <input onChange={(e)=> setAmount(e.target.value)} value={amount} type='number' className='w-full px-2 py-1.5 text-sm border border-gray-300 rounded-outline-indigo-400' required/>
+                    Amount <input onChange={(e)=> setAmount(e.target.value)} value={amount} type='number' className='w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-700 rounded-outline-indigo-400' required/>
 
                 </div>
                 {account.map((field, index)=>(
                     <div key={index} className='grid grid-cols-1 sm:grid-cols-[2fr_3fr_1fr] items-center gap-2'>
-                        <label className='text-sm font-medium text-gray-800'>{field.name}</label>
+                        <label className='text-sm font-medium text-gray-800 dark:text-gray-100'>{field.name}</label>
                         <input type={field.type} value={field.value} onChange={(e)=>setAccount((prev)=>prev.map((c, i)=> (i=== index ? {...c,value: e.target.value} : c)))} 
-                        className='w-full px-2 py-1.5 text-sm border border-gray-300 rounded-outline-indigo-400' required/>
+                        className='w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-700 rounded-outline-indigo-400' required/>
                     </div>
                 ))}
 

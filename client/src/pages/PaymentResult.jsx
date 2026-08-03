@@ -61,29 +61,29 @@ const PaymentResult = () => {
       {status === 'checking' ? (
         <>
           <Loader2Icon className='size-10 animate-spin text-indigo-600' />
-          <p className='text-gray-600'>Confirming your payment...</p>
+          <p className='text-gray-600 dark:text-gray-400'>Confirming your payment...</p>
         </>
       ) : status === 'success' ? (
         <>
           <CheckCircle2 className='size-14 text-green-500' />
-          <h2 className='text-xl font-semibold text-gray-800'>Payment successful</h2>
-          <p className='text-gray-500 max-w-sm'>
+          <h2 className='text-xl font-semibold text-gray-800 dark:text-gray-100'>Payment successful</h2>
+          <p className='text-gray-500 dark:text-gray-400 max-w-sm'>
             Your purchase is confirmed. The seller has been notified and account credentials will be shared via chat.
           </p>
         </>
       ) : status === 'pending' ? (
         <>
           <Loader2Icon className='size-14 text-amber-500' />
-          <h2 className='text-xl font-semibold text-gray-800'>Still confirming</h2>
-          <p className='text-gray-500 max-w-sm'>
+          <h2 className='text-xl font-semibold text-gray-800 dark:text-gray-100'>Still confirming</h2>
+          <p className='text-gray-500 dark:text-gray-400 max-w-sm'>
             Your payment is being verified with the provider. This can take a minute - check My Orders shortly.
           </p>
         </>
       ) : (
         <>
           <XCircle className='size-14 text-red-500' />
-          <h2 className='text-xl font-semibold text-gray-800'>Payment not completed</h2>
-          <p className='text-gray-500 max-w-sm'>
+          <h2 className='text-xl font-semibold text-gray-800 dark:text-gray-100'>Payment not completed</h2>
+          <p className='text-gray-500 dark:text-gray-400 max-w-sm'>
             Your payment was cancelled or could not be confirmed. No charge should have gone through - try again or
             use a different method.
           </p>

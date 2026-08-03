@@ -51,7 +51,7 @@ const CredentialVerifyModal = ({ listing, onClose }) => {
 
     return (
         <div className='fixed inset-0 bg-black/70 backdrop-blur bg-opacity-50 z-100 flex items-center justify-center sm:p-4'>
-            <div className='bg-white sm:rounded-lg shadow-2xl w-full max-w-xl h-screen sm:h-[400px] flex flex-col'>
+            <div className='bg-white dark:bg-gray-900 sm:rounded-lg shadow-2xl w-full max-w-xl h-screen sm:h-[400px] flex flex-col'>
                 {/* Header */}
                 <div className='bg-gradient-to-r from-indigo-600 to-indigo-400 text-white p-4 sm:rounded-t-lg flex items-center justify-between'>
                     <div className='flex-1 min-w-0'>
@@ -71,7 +71,7 @@ const CredentialVerifyModal = ({ listing, onClose }) => {
                         <Loader2Icon className='animate-spin text-indigo-500 size-6' />
                     </div>
                 ) : (
-                    <div className='flex flex-col items-start gap-3 p-4 overflow-y-scroll text-gray-700'>
+                    <div className='flex flex-col items-start gap-3 p-4 overflow-y-scroll text-gray-700 dark:text-gray-300'>
                         {credential?.originalCredential.map((cred, index) => (
                             <div key={index} className='w-full flex items-center gap-2 group'>
                                 <span className='font-medium'>{cred.name}</span> : {cred.name.toLowerCase() === 'password' ? '********' : cred?.value} <CopyIcon onClick={() => copyToClipboard(cred)} size={14} className='group-hover:visible invisible' />
@@ -87,8 +87,8 @@ const CredentialVerifyModal = ({ listing, onClose }) => {
                         </div>
 
                         <div className='flex gap-2 items-start mt-2'>
-                            <input type='checkbox' onChange={() => setIsVerified((prev) => !prev)} className='size-4 mt-0.5 text-indigo-500 bg-gray-100' />
-                            <p className='text-gray-500 text-sm'>
+                            <input type='checkbox' onChange={() => setIsVerified((prev) => !prev)} className='size-4 mt-0.5 text-indigo-500 bg-gray-100 dark:bg-gray-800' />
+                            <p className='text-gray-500 dark:text-gray-400 text-sm'>
                                 Please verify the credentials above and click on the button below to verify. <br /> If credential are not correct, please contact the owner of the listing.
                             </p>
                         </div>

@@ -55,7 +55,7 @@ const ListingDetails = () => {
         <div className='flex items-start max-md:flex-col gap-10'>
           <div className='flex-1 max-md:w-full'>
               {/*Top Section*/}
-              <div className='bg-white rounded-xl border border-gray-200 p-6 mb-5'>
+              <div className='bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 mb-5'>
 
                 <div className='flex flex-col md:flex-row md:items-end md:justify-between gap-4'>
 
@@ -64,7 +64,7 @@ const ListingDetails = () => {
                 <div className='flex items-start gap-3'>
                   <div className='p-2 rounded-xl'>{platformIcons[listing.platform]}</div>
                    <div>
-                    <h2 className='flex items-center gap-2 text-xl font-semibold text-gray-800'>{listing.title}
+                    <h2 className='flex items-center gap-2 text-xl font-semibold text-gray-800 dark:text-gray-100'>{listing.title}
                       <Link target='_blank' to={profileLink}>
                       <ArrowUpRightFromSquareIcon className='size-4 hover:text-indigo-500'/>
                       </Link></h2>
@@ -73,7 +73,7 @@ const ListingDetails = () => {
                       </p>
                       <div className='flex gap-2 mt-2'>
                         {listing.monetized && (
-                          <span className="flex items-center text-xs bg-indigo-50 text-indigo-600 px-2 py-1 rounded-md">
+                          <span className="flex items-center text-xs bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 px-2 py-1 rounded-md">
                             <CheckCircle2 className="w-3 h-3 mr-1"/>
                             Verified
                           </span>
@@ -90,11 +90,11 @@ const ListingDetails = () => {
                 </div>
 
                 <div className='text-right'>
-                      <h3 className='text-2xl font-bold text-gray-800'>
+                      <h3 className='text-2xl font-bold text-gray-800 dark:text-gray-100'>
                       {currency}
                       {listing.price?.toLocaleString()}
                      </h3>
-                     <p className='text-sm text-gray-500'>USD</p>
+                     <p className='text-sm text-gray-500 dark:text-gray-400'>USD</p>
                 </div>
 
               </div>
@@ -102,9 +102,9 @@ const ListingDetails = () => {
                 
           {/*Screenshot Section*/}
             {images?.length > 0 && (
-             <div className='bg-white rounded-xl border border-gray-200 mb-5 overflow-hidden'>
+             <div className='bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 mb-5 overflow-hidden'>
              <div className='p-4'>
-              <h4 className='font-semibold text-gray-800'>Screenshots & Proof</h4>
+              <h4 className='font-semibold text-gray-800 dark:text-gray-100'>Screenshots & Proof</h4>
               </div>
               {/*Slider container*/}
               <div className='relative w-full aspect-video overflow-hidden'>
@@ -115,12 +115,12 @@ const ListingDetails = () => {
                 </div>
 
                 {/*Navigations Butttons*/}
-                <button onClick={prevSlide}className='absolute left-3 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white p-2 rounded-full shadow'>
-                  <ChevronLeftIcon className='w-5 h-5 text-gray-700'/>
+                <button onClick={prevSlide}className='absolute left-3 top-1/2 -translate-y-1/2 bg-white dark:bg-gray-900/70 hover:bg-white p-2 rounded-full shadow'>
+                  <ChevronLeftIcon className='w-5 h-5 text-gray-700 dark:text-gray-300'/>
                 </button>
 
-                <button onClick={nextSlide} className='absolute right-3 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white p-2 rounded-full shadow'>
-                  <ChevronRightIcon className='w-5 h-5 text-gray-700'/>
+                <button onClick={nextSlide} className='absolute right-3 top-1/2 -translate-y-1/2 bg-white dark:bg-gray-900/70 hover:bg-white p-2 rounded-full shadow'>
+                  <ChevronRightIcon className='w-5 h-5 text-gray-700 dark:text-gray-300'/>
                 </button>
 
                 {/*Dots Indicator*/}
@@ -135,80 +135,80 @@ const ListingDetails = () => {
             )} 
 
             {/* Account Metrics */}  
-            <div className='bg-white rounded-xl border border-gray-200 mb-5'>
+            <div className='bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 mb-5'>
               <div className='p-4 border-b border-gray-100'>
-                <h4 className='font-semibold text-gray-800'>Account Metrics</h4>
+                <h4 className='font-semibold text-gray-800 dark:text-gray-100'>Account Metrics</h4>
               </div>
               <div className='grid grid-cols-2 md:grid-cols-4 gap-4 p-4 text-center'>
                 <div>
-                  <Users className='mx-auto text-gray-400 w-5 h-5 mb-1'/>
-                  <p className='font-semibold text-gray-800'>
+                  <Users className='mx-auto text-gray-400 dark:text-gray-500 w-5 h-5 mb-1'/>
+                  <p className='font-semibold text-gray-800 dark:text-gray-100'>
                     {listing.followers_count?.toLocaleString()}
                   </p>
-                  <p className='text-xs text-gray-500'>Followers</p>
+                  <p className='text-xs text-gray-500 dark:text-gray-400'>Followers</p>
                 </div>   
                 <div>
-                  <LineChart className='mx-auto text-gray-400 w-5 h-5 mb-1'/>
-                  <p className='font-semibold text-gray-800'>
+                  <LineChart className='mx-auto text-gray-400 dark:text-gray-500 w-5 h-5 mb-1'/>
+                  <p className='font-semibold text-gray-800 dark:text-gray-100'>
                     {listing.engagement_rate}%
                   </p>
-                  <p className='text-xs text-gray-500'>Engagement</p>
+                  <p className='text-xs text-gray-500 dark:text-gray-400'>Engagement</p>
                 </div>
                  <div>
-                  <Eye className='mx-auto text-gray-400 w-5 h-5 mb-1'/>
-                  <p className='font-semibold text-gray-800'>
+                  <Eye className='mx-auto text-gray-400 dark:text-gray-500 w-5 h-5 mb-1'/>
+                  <p className='font-semibold text-gray-800 dark:text-gray-100'>
                     {listing.monthly_views?.toLocaleString()}
                   </p>
-                  <p className='text-xs text-gray-500'>Monthly Views</p>
+                  <p className='text-xs text-gray-500 dark:text-gray-400'>Monthly Views</p>
                 </div>
                  <div>
-                  <Calendar className='mx-auto text-gray-400 w-5 h-5 mb-1'/>
-                  <p className='font-semibold text-gray-800'>
+                  <Calendar className='mx-auto text-gray-400 dark:text-gray-500 w-5 h-5 mb-1'/>
+                  <p className='font-semibold text-gray-800 dark:text-gray-100'>
                     {new Date(listing.createdAt).toLocaleDateString()}
                   </p>
-                  <p className='text-xs text-gray-500'>Listed</p>
+                  <p className='text-xs text-gray-500 dark:text-gray-400'>Listed</p>
                 </div>
               </div>
               </div>   
 
               {/* Description */}  
-              <div className='bg-white rounded-xl border border-gray-200 mb-5'>
+              <div className='bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 mb-5'>
                 <div className='p-4 border-b border-gray-100'>
-                  <h4 className='font-semibold text-gray-800'>Description
+                  <h4 className='font-semibold text-gray-800 dark:text-gray-100'>Description
                   </h4>
                   </div>
-                   <div className='p-4 text-sm text-gray-600'>{listing.description}</div>
+                   <div className='p-4 text-sm text-gray-600 dark:text-gray-400'>{listing.description}</div>
               </div>
                       
                   {/*Additional Details*/}
-                    <div className='bg-white rounded-xl border border-gray-200 mb-5'>
+                    <div className='bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 mb-5'>
                 <div className='p-4 border-b border-gray-100'>
-                  <h4 className='font-semibold text-gray-800'>Additional Details
+                  <h4 className='font-semibold text-gray-800 dark:text-gray-100'>Additional Details
                   </h4>
                   </div>
                    <div className='grid grid-cols-1 md:grid-cols-2 gap-6 p-4 text-sm'>
                     <div>
-                      <p className="text-gray-500">Niche</p>
+                      <p className="text-gray-500 dark:text-gray-400">Niche</p>
                       <p className="font-medium capitalize">{listing.niche}</p>
                     </div>
                     <div>
-                      <p className="text-gray-500">Primary Country</p>
-                      <p className="flex items-center font-medium"><MapPin className="size-4 mr-1 text-gray-400"/>{listing.country}</p>
+                      <p className="text-gray-500 dark:text-gray-400">Primary Country</p>
+                      <p className="flex items-center font-medium"><MapPin className="size-4 mr-1 text-gray-400 dark:text-gray-500"/>{listing.country}</p>
                     </div>
                      <div>
-                      <p className="text-gray-500">Audience Age</p>
+                      <p className="text-gray-500 dark:text-gray-400">Audience Age</p>
                       <p className="font-medium">{listing.age_range}</p>
                     </div>
                     <div>
-                      <p className="text-gray-500">Platform Verified</p>
+                      <p className="text-gray-500 dark:text-gray-400">Platform Verified</p>
                       <p className="font-medium">{listing.platformAssured ? "Yes" : "No"}</p>
                     </div>
                     <div>
-                      <p className="text-gray-500">Monetization</p>
+                      <p className="text-gray-500 dark:text-gray-400">Monetization</p>
                       <p className="font-medium">{listing.monetized ? "Enabled" : "Disabled"}</p>
                     </div>
                     <div>
-                      <p className="text-gray-500">Status</p>
+                      <p className="text-gray-500 dark:text-gray-400">Status</p>
                       <p className="font-medium capitalize">{listing.status}</p>
                     </div>
                     
@@ -217,16 +217,16 @@ const ListingDetails = () => {
 
         </div>                
           {/*Seller Info & Purchase Options*/}
-          <div className="bg-white min-w-full md:min-w-92.5 rounded-xl border border-gray-200 p-5 max-md:mb-10">
-            <h4 className="font-semibold text-gray-800 mb-4">Seller Information</h4>
+          <div className="bg-white dark:bg-gray-900 min-w-full md:min-w-92.5 rounded-xl border border-gray-200 dark:border-gray-800 p-5 max-md:mb-10">
+            <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-4">Seller Information</h4>
             <div className="flex items-center gap-3 mb-2">
               <img src={listing.owner?.image} alt="seller image" className="size-10 rounded-full"/>
               <div>
-                <p className="font-medium text-gray-800">{listing.owner?.name}</p>
-                <p className="text-sm text-gray-500">{listing.owner?.email}</p>
+                <p className="font-medium text-gray-800 dark:text-gray-100">{listing.owner?.name}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{listing.owner?.email}</p>
               </div>
             </div>
-            <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+            <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-4">
               <p>Member Since <span className="font-medium">{new Date(listing.owner?.createdAt).toLocaleString()}</span></p>
             </div>
             <motion.div whileHover={{scale: 1.07}}
@@ -258,8 +258,8 @@ const ListingDetails = () => {
             )}
 
             {/* Footer */}
-          <div className="w-full bg-white border-t border-gray-200 p-4 text-center mt-10">
-                <p className="text-sm text-gray-500">
+          <div className="w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 p-4 text-center mt-10">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   © 2026 <span className="text-indigo-600">Hiten</span>. All rights Reserved.
                 </p>
           </div>

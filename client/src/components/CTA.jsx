@@ -1,11 +1,18 @@
 import React from 'react'
+import { motion } from 'framer-motion'
 
 const CTA = () => {
   return (
-    <div className="max-w-5xl mx-2 md:mx-auto p-px rounded-2xl bg-linear-to-r from-purple-600/20 to-blue-500/30">
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="max-w-5xl mx-2 md:mx-auto p-px rounded-2xl bg-linear-to-r from-purple-600/20 to-blue-500/30"
+    >
             <div className="flex flex-col items-center justify-center text-center py-12 md:py-16 rounded-[15px] bg-linear-to-r
-             from-[#F3EAFF] to-[#E1EFFF]">  
-                <div className="flex items-center justify-center bg-white px-3 py-1.5 shadow gap-1 rounded-full text-xs">
+             from-[#F3EAFF] to-[#E1EFFF] dark:from-[#241a3d] dark:to-[#151e33]">  
+                <div className="flex items-center justify-center bg-white dark:bg-gray-900 px-3 py-1.5 shadow gap-1 rounded-full text-xs">
                     <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M2.503 10.06a3.3 3.3 0 0 0-.88 1.809 4.7 4.7 0 0 0-.067 1.03v.545h.75q.416-.002.825-.075a3.24 3.24 0 0 0 
                         1.81-.882 1.65 1.65 0 0 0-.131-2.325 1.65 1.65 0 0 0-2.307-.103m1.632 1.621a2.1 2.1 0 0 1-1.182.563h-.206v-.207a2.1 
@@ -21,19 +28,19 @@ const CTA = () => {
                     <span className="bg-linear-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent font-medium">Trusted by
                          Millions</span>
                 </div>
-                <h2 className="text-2xl md:text-4xl font-medium mt-2 leading-[1.2]">
+                <h2 className="text-2xl md:text-4xl font-medium mt-2 leading-[1.2] text-gray-800 dark:text-gray-100">
                      Sell your Social Accounts <br />
                     <span className="bg-linear-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">With Confidence </span> 
                      & Earn Money
                 </h2>
-                <p className="text-slate-500 mt-2 max-w-lg max-md:text-sm">We are the leading social media marketplace that connects brands with their 
+                <p className="text-slate-500 dark:text-slate-400 mt-2 max-w-lg max-md:text-sm">We are the leading social media marketplace that connects brands with their 
                     customers With our user-friendly interface.</p>
-                <button type="button" className="bg-linear-to-r from-purple-600 to-blue-500 text-white text-sm px-5 py-2.5 rounded-xl 
-                font-medium mt-4 hover:scale-105 active:scale-95 transition-all duration-300"> 
+                <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} type="button" className="bg-linear-to-r from-purple-600 to-blue-500 text-white text-sm px-5 py-2.5 rounded-xl 
+                font-medium mt-4 transition-all duration-300"> 
                     Get Started Today
-                </button>
+                </motion.button>
             </div>
-        </div>
+        </motion.div>
   )
 }
 

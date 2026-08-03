@@ -86,16 +86,16 @@ const toggleSection = (section) =>{
 
   return (
     <div className={`${showFilters ? "max-sm:fixed" : "max-sm:hidden"} max-sm:inset-0 z-100 max-sm:h-screen max-sm:overflow-scroll
-     bg-white rounded-lg shadow-sm border border-gray-200 h-fit sticky top-24 md:min-w-[300px]`}>
-        <div className='p-4 border-b border-gray-200'>
+     bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-800 h-fit sticky top-24 md:min-w-[300px]`}>
+        <div className='p-4 border-b border-gray-200 dark:border-gray-800'>
           <div className='flex items-center justify-between'>
-            <div className='flex items-center space-x-2 text-gray-700'>
+            <div className='flex items-center space-x-2 text-gray-700 dark:text-gray-300'>
                <Filter className="size-4" />
                  <h3 className='font-semibold'>Filters</h3>
              </div>
          <div className='flex items-center gap-2'>
-             <X onClick={onClearFilters} className='size-6 text-gray-500 hover:text-gray-700 p-1 hover:bg-gray-100 rounded transition-colors cursor-pointer'/>
-             <button onClick={() => setShowFilters(false)} className='sm:hidden text-sm border text-gray-500  px-3 py-1 rounded'>
+             <X onClick={onClearFilters} className='size-6 text-gray-500 dark:text-gray-400 hover:text-gray-700 p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors cursor-pointer'/>
+             <button onClick={() => setShowFilters(false)} className='sm:hidden text-sm border text-gray-500 dark:text-gray-400  px-3 py-1 rounded'>
                 Apply
              </button>
             </div>
@@ -105,19 +105,19 @@ const toggleSection = (section) =>{
             {/*Search Bar*/}
             <div className='flex items-center justify-between'>
                 <input type="text" placeholder="Search by Username,platform,niche,etc"
-                className='w-full text-sm px-3 py-2 border border-gray-300 rounded-md outline-indigo-500' onChange={onChangeSearch} value={search}/>        
+                className='w-full text-sm px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md outline-indigo-500' onChange={onChangeSearch} value={search}/>        
                 </div>
 
                 {/*Platform Filter*/}
                 <div>
                     <button onClick={()=> toggleSection("platform")} className='flex items-center justify-between w-full mb-3'>
-                        <label className='text-sm font-nedium text-gray-800'>Platform</label>
+                        <label className='text-sm font-nedium text-gray-800 dark:text-gray-100'>Platform</label>
                         <ChevronDown className={`size-4 transition-transform ${expandedSections.platform ? "rotate-180" : ""}`}/>
                     </button>
                     {expandedSections.platform &&(
                         <div className='flex flex-col gap-2'>
                             {platforms.map((platform)=>(
-                                <label key={platform.value} className='flex items-center gap-2 text-gray-700 txt-sm'>
+                                <label key={platform.value} className='flex items-center gap-2 text-gray-700 dark:text-gray-300 txt-sm'>
                                     <input type="checkbox"
                                     checked={filters.platform?.includes(platform.value) || false} 
                                         onChange={(e)=>{
@@ -139,15 +139,15 @@ const toggleSection = (section) =>{
                 {/*Price Range*/}
                 <div>
                     <button onClick={()=> toggleSection("price")} className='flex items-center justify-between w-full mb-3'>
-                        <label className='text-sm font-nedium text-gray-800'>Price Range</label>
+                        <label className='text-sm font-nedium text-gray-800 dark:text-gray-100'>Price Range</label>
                         <ChevronDown className={`size-4 transition-transform ${expandedSections.price ? "rotate-180" : ""}`}/>
                     </button>
                     {expandedSections.price &&(
                         <div className='space-y-3'>
                             <input type="range" min="0" max="100000" step="100" value={filters.maxPrice ?? 100000} onChange={(e)=>onFiltersChange({...filters,
                                 maxPrice: parseInt(e.target.value)
-                            })} className='w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600'/>
-                            <div className="flex items-center justify-between text-sm text-gray-600">
+                            })} className='w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-indigo-600'/>
+                            <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
                                     <span>{currency}0</span>
                                     <span>{currency}{(filters.maxPrice ?? 100000).toLocaleString()}</span>
                             </div>
@@ -158,14 +158,14 @@ const toggleSection = (section) =>{
                 {/*Followers Range*/}
                 <div>
                     <button onClick={()=> toggleSection("followers")} className='flex items-center justify-between w-full mb-3'>
-                        <label className='text-sm font-nedium text-gray-800'>Minimum Followers</label>
+                        <label className='text-sm font-nedium text-gray-800 dark:text-gray-100'>Minimum Followers</label>
                         <ChevronDown className={`size-4 transition-transform ${expandedSections.followers ? "rotate-180" : ""}`}/>
                     </button>
                     {expandedSections.followers &&(
                         <select 
                         value={filters.minFollowers?.toString() ?? "0"}
                         onChange={(e)=>onFiltersChange({...filters, minFollowers: parseInt(e.target.value) ?? 0})}
-                        className='w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-700 outline-indigo-500'>
+                        className='w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 outline-indigo-500'>
                             <option value="0">Any amount</option>
                             <option value="1000">1K+</option>
                             <option value="50000">50K+</option>
@@ -181,14 +181,14 @@ const toggleSection = (section) =>{
                 {/*Niche Filter*/}
                  <div>
                     <button onClick={()=> toggleSection("niche")} className='flex items-center justify-between w-full mb-3'>
-                        <label className='text-sm font-nedium text-gray-800'>Niche</label>
+                        <label className='text-sm font-nedium text-gray-800 dark:text-gray-100'>Niche</label>
                         <ChevronDown className={`size-4 transition-transform ${expandedSections.niche ? "rotate-180" : ""}`}/>
                     </button>
                     {expandedSections.niche &&(
                         <select 
                         value={filters.niche ?? ""}
                         onChange={(e)=>onFiltersChange({...filters, niche: e.target.value ?? null})}
-                        className='w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-700 outline-indigo-500'>
+                        className='w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 outline-indigo-500'>
                             <option values="">All niches</option>
                                 {niches.map((niche)=>(
                                     <option key={niche.value} value={niche.value}>
@@ -203,7 +203,7 @@ const toggleSection = (section) =>{
                 {/*Verification Status*/}
                 <div>
                     <button onClick={()=> toggleSection("status")} className='flex items-center justify-between w-full mb-3'>
-                        <label className='text-sm font-nedium text-gray-800'>Account Status</label>
+                        <label className='text-sm font-nedium text-gray-800 dark:text-gray-100'>Account Status</label>
                         <ChevronDown className={`size-4 transition-transform ${expandedSections.status ? "rotate-180" : ""}`}/>
                     </button>
                     {expandedSections.status &&(
@@ -211,13 +211,13 @@ const toggleSection = (section) =>{
                            <label className='flex items-center space-x-2 cursor-pointer'>
                              <input type="checkbox" checked={filters.verified ?? false} onChange={(e)=> 
                                 onFiltersChange({...filters, verified: e.target.checked})}/>
-                             <span className='text-sm text-gray-700'>Verified Accounts Only</span>
+                             <span className='text-sm text-gray-700 dark:text-gray-300'>Verified Accounts Only</span>
                            </label>
 
                            <label className='flex items-center space-x-2 cursor-pointer'>
                              <input type="checkbox" checked={filters.monetized ?? false} onChange={(e)=> 
                                 onFiltersChange({...filters, monetized: e.target.checked})}/>
-                             <span className='text-sm text-gray-700'>Monetized Accounts Only</span>
+                             <span className='text-sm text-gray-700 dark:text-gray-300'>Monetized Accounts Only</span>
                            </label>
                        </div>
                     )}

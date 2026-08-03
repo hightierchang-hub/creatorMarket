@@ -53,7 +53,7 @@ const CredentialSubmission = ({onClose, listing}) => {
     }
   return (
     <div className='fixed inset-0 bg-black/70 backdrop-blur bg-opacity-50 z-100 flex items-center justify-center sm:p-4'>
-        <div className='bg-white sm:rounded-lg shadow-2xl w-full max-w-lg h-screen sm:h-80 flex flex-col'>
+        <div className='bg-white dark:bg-gray-900 sm:rounded-lg shadow-2xl w-full max-w-lg h-screen sm:h-80 flex flex-col'>
             {/* Header */}
             <div className='bg-linear-to-r from-indigo-600 to-indigo-400 text-white p-4 sm:rounded-t-lg flex items-center justify-between'>
                 <div className='flex-1 min-w-0'>
@@ -70,12 +70,12 @@ const CredentialSubmission = ({onClose, listing}) => {
                 <div>
                 {credential.map((cred, index)=>(
                     <div key={cred.name} className='grid grid-cols-[2fr_3fr_1fr] items-center gap-2 mb-4'>
-                        <label className='text-sm font-medium text-gray-800'>{cred.name}</label>
+                        <label className='text-sm font-medium text-gray-800 dark:text-gray-100'>{cred.name}</label>
                         <input type="text" value={cred.value} onChange={(e)=>setCredential((prev)=>prev.map((c, i)=>(i=== index ? {...c,value:
-                            e.target.value} : c)))} className='w-full px-2 py-1.5 text-sm border border-gray-300 rounded outline-indigo-400'/>
+                            e.target.value} : c)))} className='w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-700 rounded outline-indigo-400'/>
                             
-                            <button type='button' onClick={()=>setCredential((prev)=>prev.filter((_, i)=>i !==index))} className='p-1 hover:bg-gray-100 rounded'>
-                              <X className='w-4 h-4 text-gray-500 hover:text-red-500'/>
+                            <button type='button' onClick={()=>setCredential((prev)=>prev.filter((_, i)=>i !==index))} className='p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded'>
+                              <X className='w-4 h-4 text-gray-500 dark:text-gray-400 hover:text-red-500'/>
                             </button>
                     </div>
                 ))}
@@ -83,8 +83,8 @@ const CredentialSubmission = ({onClose, listing}) => {
                 {/* Add more Fields */}
                 <div className='flex items-center gap-2'>
                     <input type='text' value={newField} onChange={(e)=>setNewField(e.target.value)} 
-                    placeholder='Field Name...' className='outline-none border-b border-gray-200'/>
-                    <button type='button' onClick={handleAddField} className='flex items-center gap-2 text-sm text-gray-600 hover:text-gray-700 cursor-pointer'>
+                    placeholder='Field Name...' className='outline-none border-b border-gray-200 dark:border-gray-800'/>
+                    <button type='button' onClick={handleAddField} className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-700 cursor-pointer'>
                         <CirclePlus className='w-5 h-5'/>
                     </button>
                 </div>

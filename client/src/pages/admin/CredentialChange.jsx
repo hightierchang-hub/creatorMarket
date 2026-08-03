@@ -38,16 +38,16 @@ const CredentialChange = () => {
     ) : (
         <div className='h-full'>
             {listings.length === 0 ? (
-                <div className='flex flex-col items-center justify-center text-center text-gray-600 h-full'>
+                <div className='flex flex-col items-center justify-center text-center text-gray-600 dark:text-gray-400 h-full'>
                     <h3 className='text-2xl font-bold'>All Credentials Changed</h3>
                     <p>No listings with unchanged credentials found</p>
                 </div>
             ) : (
                 <>
                     <AdminTitle text1='Change' text2=' Credentials' />
-                    <div className='mt-10 overflow-x-auto bg-white border border-gray-200 w-full max-w-5xl rounded-xl'>
-                        <table className='w-full text-sm text-left  text-gray-700  '>
-                            <thead className='text-xs uppercase border-b border-gray-200'>
+                    <div className='mt-10 overflow-x-auto bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full max-w-5xl rounded-xl'>
+                        <table className='w-full text-sm text-left  text-gray-700 dark:text-gray-300  '>
+                            <thead className='text-xs uppercase border-b border-gray-200 dark:border-gray-800'>
                                 <tr>
                                     <th className='pl-4 py-3'> # </th>
                                     <th className='px-4 py-3'>Title</th>
@@ -59,7 +59,7 @@ const CredentialChange = () => {
                             </thead>
                             <tbody>
                                 {listings.map((listing, index) => (
-                                    <tr key={index} className='border-t border-gray-200 hover:bg-indigo-50/50'>
+                                    <tr key={index} className='border-t border-gray-200 dark:border-gray-800 hover:bg-indigo-50/50'>
                                         <td className='pl-4 py-3'>{index + 1}.</td>
                                         <td className='px-4 py-3'>{listing.title}</td>
                                         <td className='px-4 py-3'>{listing.niche}</td>

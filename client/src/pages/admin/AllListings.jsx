@@ -41,10 +41,10 @@ const AllListings = () => {
     };
 
     const colorMapCredentials = {
-        notSubmit: { bg: 'bg-red-100', text: 'text-red-600', icon: XIcon },
-        submitted: { bg: 'bg-yellow-100', text: 'text-yellow-600', icon: MailCheckIcon },
-        verified: { bg: 'bg-blue-100', text: 'text-blue-600', icon: CheckCircleIcon },
-        changed: { bg: 'bg-green-100', text: 'text-green-600', icon: CheckCircleIcon },
+        notSubmit: { bg: 'bg-red-100 dark:bg-red-500/15', text: 'text-red-600 dark:text-red-300', icon: XIcon },
+        submitted: { bg: 'bg-yellow-100 dark:bg-yellow-500/15', text: 'text-yellow-600 dark:text-yellow-300', icon: MailCheckIcon },
+        verified: { bg: 'bg-blue-100 dark:bg-blue-500/15', text: 'text-blue-600 dark:text-blue-300', icon: CheckCircleIcon },
+        changed: { bg: 'bg-green-100 dark:bg-green-500/15', text: 'text-green-600 dark:text-green-300', icon: CheckCircleIcon },
     };
 
     useEffect(() => {
@@ -59,9 +59,9 @@ const AllListings = () => {
         <div>
             <AdminTitle text1='All' text2=' Listings' />
 
-            <div className='mt-10 overflow-x-auto bg-white border border-gray-200 w-full max-w-5xl rounded-xl'>
-                <table className='w-full text-sm text-left  text-gray-700  '>
-                    <thead className='text-xs uppercase border-b border-gray-200'>
+            <div className='mt-10 overflow-x-auto bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full max-w-5xl rounded-xl'>
+                <table className='w-full text-sm text-left  text-gray-700 dark:text-gray-300  '>
+                    <thead className='text-xs uppercase border-b border-gray-200 dark:border-gray-800'>
                         <tr>
                             <th className='pl-4 py-3'> # </th>
                             <th className='px-4 py-3'>Title</th>
@@ -74,7 +74,7 @@ const AllListings = () => {
                     </thead>
                     <tbody>
                         {listings.map((listing, index) => (
-                            <tr onClick={() => setShowModal(listing)} key={index} className='border-t border-gray-200 hover:bg-indigo-50/50 cursor-pointer'>
+                            <tr onClick={() => setShowModal(listing)} key={index} className='border-t border-gray-200 dark:border-gray-800 hover:bg-indigo-50/50 cursor-pointer'>
                                 <td className='pl-4 py-3'>{index + 1}.</td>
                                 <td className='px-4 py-3'>{listing.title}</td>
                                 <td className='px-4 py-3'>{listing.niche}</td>
@@ -94,7 +94,7 @@ const AllListings = () => {
                                 <td className='px-4 py-3'>
                                     <div onClick={(e) => e.stopPropagation()} className='flex gap-4'>
                                         {listing.status !== 'deleted' ? (
-                                            <select value={listing.status} onChange={(e) => changeListingStatus(e.target.value, listing)} className='px-2 py-1.5 mt-1 text-gray-500 border border-gray-300 rounded-md outline-none'>
+                                            <select value={listing.status} onChange={(e) => changeListingStatus(e.target.value, listing)} className='px-2 py-1.5 mt-1 text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-700 rounded-md outline-none'>
                                                 <option value='active'>Active</option>
                                                 <option value='inactive'>Inactive</option>
                                                 <option value='ban'>Ban</option>

@@ -51,7 +51,7 @@ export const addListing = async (req, res) =>{
        return res.status(201).json({ message: "Account Listed successfully", listing});
     } catch (error) {
         console.log(error);
-        res,status(500).json({ message: error.code || error.message });
+        res.status(500).json({ message: error.code || error.message });
     }
 }
 

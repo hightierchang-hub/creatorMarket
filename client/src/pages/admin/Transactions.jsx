@@ -40,9 +40,9 @@ const Transactions = () => {
         <div>
             <AdminTitle text1='List' text2=' Transactions' />
 
-            <div className='mt-10 overflow-x-auto bg-white border border-gray-200 w-full max-w-5xl rounded-xl'>
-                <table className='w-full text-sm text-left  text-gray-700  '>
-                    <thead className='text-xs uppercase border-b border-gray-200'>
+            <div className='mt-10 overflow-x-auto bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full max-w-5xl rounded-xl'>
+                <table className='w-full text-sm text-left  text-gray-700 dark:text-gray-300  '>
+                    <thead className='text-xs uppercase border-b border-gray-200 dark:border-gray-800'>
                         <tr>
                             <th className='pl-4 py-3'> # </th>
                             <th className='px-4 py-3'>Username</th>
@@ -54,7 +54,7 @@ const Transactions = () => {
                     </thead>
                     <tbody>
                         {trasactions.map((t, index) => (
-                            <tr key={index} className='border-t border-gray-200 hover:bg-indigo-50/50'>
+                            <tr key={index} className='border-t border-gray-200 dark:border-gray-800 hover:bg-indigo-50/50'>
                                 <td className='pl-4 py-3'>{index + 1}.</td>
                                 <td className='px-4 py-3'>@{t.listing.username}</td>
                                 <td className='px-4 py-3'>{t.listing.platform}</td>

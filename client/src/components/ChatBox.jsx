@@ -81,8 +81,18 @@ const ChatBox = () => {
     if (!isOpen || !listing) return null
 
   return (
-    <div className='fixed inset-0 bg-black/70 backdrop-blur bg-opacity-50 z-100 flex items-center justify-center'>
-        <div className='bg-white sm:rounded-lg shadow-2xl w-full max-w-2xl h-screen sm:h-150 flex flex-col'>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className='fixed inset-0 bg-black/70 backdrop-blur bg-opacity-50 z-100 flex items-center justify-center'
+    >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.94, y: 16 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          className='bg-white dark:bg-gray-900 sm:rounded-lg shadow-2xl w-full max-w-2xl h-screen sm:h-150 flex flex-col'
+        >
             
             {/*Header*/}
           <div className='bg-linear-to-r from-indigo-600 to-indigo-400 text-white p-4 sm:rounded-t-lg flex items-center justify-between'>
@@ -103,7 +113,7 @@ const ChatBox = () => {
           </div>
 
           {/*Message Area*/}
-          <div className='flex-1 overflow-y-auto p-4 space-y-4 bg-gray-100'>
+          <div className='flex-1 overflow-y-auto p-4 space-y-4 bg-gray-100 dark:bg-gray-800'>
             {
               isLoading ? (
                 <div className='flex items-center justify-center h-full'>
@@ -112,8 +122,8 @@ const ChatBox = () => {
             ) :messages.length === 0 ? (
               <div className='flex items-center justify-center h-full'>
                 <div className='text-center'>
-                  <p className='text-gray-500 mb-2'>No messages yet</p>
-                  <p className='text-sm text-gray-400'>Start the conversation!</p>
+                  <p className='text-gray-500 dark:text-gray-400 mb-2'>No messages yet</p>
+                  <p className='text-sm text-gray-400 dark:text-gray-500'>Start the conversation!</p>
                   </div> 
 
               </div>
@@ -125,9 +135,9 @@ const ChatBox = () => {
                 return (
                   <div key={messageKey} className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[70%] rounded-lg p-3 pb-1 ${isOwnMessage ? "bg-indigo-600 text-white"
-                       : "bg-white border-gray-200 text-gray-800"}`}>
+                       : "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-100"}`}>
                       <p className='text-sm wrap-break-word whitespace-pre-wrap'>{message.message}</p>
-                      <p className={`text-[10px] mt-1 ${isOwnMessage ? "text-indigo-200" : "text-gray-400"}`}>
+                      <p className={`text-[10px] mt-1 ${isOwnMessage ? "text-indigo-200" : "text-gray-400 dark:text-gray-500"}`}>
                         {format(new Date(message.createdAt), "MMM dd, 'at' h:mm a")}</p>
                     </div>
                   </div>
@@ -140,7 +150,7 @@ const ChatBox = () => {
           {/*Input Area*/}
           {chat?.listing?.status === "active" ? 
           (
-            <form onSubmit={handleSendMessage} className="p-4 bg-white border-t border-gray-200 rounded-b-lg">
+            <form onSubmit={handleSendMessage} className="p-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 rounded-b-lg">
               <div className="flex items-end space-x-2">
 
                 <textarea
@@ -152,12 +162,12 @@ const ChatBox = () => {
                     handleSendMessage(e)
                   }
                 }}
-                placeholder="Type your message..." className="flex-1 resize-none border border-gray-300 rounded-lg px-4 py-2
+                placeholder="Type your message..." className="flex-1 resize-none border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-lg px-4 py-2
                 focus:outline-indigo-500 max-h-32" rows={1}/>
 
                 <button disabled={!newMessage.trim() || isSending} type="submit" className='bg-indigo-500 hover:bg-indigo-700
-                 text-white p-2.5 rounded-lg disabled-opacity-50 transition-colors'>
-                  {isSending ? <Loader2Icon className='w-5 h-5 aniamte-spin'/> 
+                 text-white p-2.5 rounded-lg disabled:opacity-50 transition-colors'>
+                  {isSending ? <Loader2Icon className='w-5 h-5 animate-spin'/> 
                   : <Send className='w-5 h-5' />}
                   
                 </button>
@@ -166,13 +176,13 @@ const ChatBox = () => {
           )
           :
           (
-            <div className="p-4 bg-white border-t border-gray-200 rounded-b-lg">
-              <p className='text-sm text-gray-600 text-center'>{chat ? `Listing is ${chat?.listing?.status}` : "Loading chat..."}</p>
+            <div className="p-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 rounded-b-lg">
+              <p className='text-sm text-gray-600 dark:text-gray-400 text-center'>{chat ? `Listing is ${chat?.listing?.status}` : "Loading chat..."}</p>
             </div>
           )
         }
-        </div>
-    </div>
+        </motion.div>
+    </motion.div>
   )
 }
 

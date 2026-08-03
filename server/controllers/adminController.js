@@ -1,12 +1,31 @@
 import prisma from "../configs/prisma.js";
+import { clerkClient } from '@clerk/express';
 
 // Controller for checking if user admin
 export const isAdmin = async (req, res) => {
-    try{
-        return res.json({isAdmin: true})
+    try {
+        const authData = typeof req.auth === 'function' ? await req.auth() : null;
+        const userId = authData?.userId ?? req.userId ?? null;
+
+        if (!userId) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+
+        const user = await clerkClient.users.getUser(userId);
+        const adminEmails = (process.env.ADMIN_EMAILS || '')
+            .split(',')
+            .map((email) => email.trim().toLowerCase())
+            .filter(Boolean);
+
+        const emailAddress = user?.emailAddresses?.[0]?.emailAddress
+            || user?.primaryEmailAddress?.emailAddress
+            || '';
+        const isAdminUser = adminEmails.includes(emailAddress.toLowerCase());
+
+        return res.json({ isAdmin: isAdminUser });
     } catch (error) {
         console.log(error);
-        res.status(400).json({ message:error.code || error.message });
+        res.status(400).json({ message: error.code || error.message });
     }
 }
 

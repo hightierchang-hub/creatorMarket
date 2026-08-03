@@ -53,7 +53,7 @@ const CredentialChangeModal = ({ listing, onClose }) => {
 
     return (
         <div className='fixed inset-0 bg-black/70 backdrop-blur bg-opacity-50 z-100 flex items-center justify-center sm:p-4'>
-            <div className='bg-white sm:rounded-lg shadow-2xl w-full max-w-xl h-screen sm:h-[450px] flex flex-col'>
+            <div className='bg-white dark:bg-gray-900 sm:rounded-lg shadow-2xl w-full max-w-xl h-screen sm:h-[450px] flex flex-col'>
                 {/* Header */}
                 <div className='bg-gradient-to-r from-indigo-600 to-indigo-400 text-white p-4 sm:rounded-t-lg flex items-center justify-between'>
                     <div className='flex-1 min-w-0'>
@@ -73,7 +73,7 @@ const CredentialChangeModal = ({ listing, onClose }) => {
                         <Loader2Icon className='animate-spin text-indigo-500 size-6' />
                     </div>
                 ) : (
-                    <div className='flex flex-col items-start gap-3 p-4 overflow-y-scroll text-gray-700'>
+                    <div className='flex flex-col items-start gap-3 p-4 overflow-y-scroll text-gray-700 dark:text-gray-300'>
                         {credential?.originalCredential.map((cred, index) => (
                             <div key={index} className='w-full flex items-center gap-2 group'>
                                 <span className='font-medium'>{cred.name}</span> : {cred.name.toLowerCase() === 'password' ? '********' : cred?.value}
@@ -93,14 +93,14 @@ const CredentialChangeModal = ({ listing, onClose }) => {
                             <h3 className='text-lg'>Add New Credentials</h3>
                             {newCredential?.map((cred, index) => (
                                 <div key={index} className='w-full flex items-center gap-2 group max-w-sm'>
-                                    <span className='font-medium'>{cred.name}</span> : <input type={cred.type} value={cred.value} onChange={(e) => setNewCredential((prev) => prev.map((c, i) => (i === index ? { ...c, value: e.target.value } : c)))} className='w-full bg-gray-100 outline-indigo-400 rounded-md p-2 text-sm' />
+                                    <span className='font-medium'>{cred.name}</span> : <input type={cred.type} value={cred.value} onChange={(e) => setNewCredential((prev) => prev.map((c, i) => (i === index ? { ...c, value: e.target.value } : c)))} className='w-full bg-gray-100 dark:bg-gray-800 outline-indigo-400 rounded-md p-2 text-sm' />
                                 </div>
                             ))}
                         </div>
 
                         <div className='flex gap-2 items-start mt-2'>
-                            <input type='checkbox' onChange={() => setIsChanged((prev) => !prev)} className='size-4 mt-0.5 text-indigo-500 bg-gray-100' />
-                            <p className='text-gray-500 text-sm'>
+                            <input type='checkbox' onChange={() => setIsChanged((prev) => !prev)} className='size-4 mt-0.5 text-indigo-500 bg-gray-100 dark:bg-gray-800' />
+                            <p className='text-gray-500 dark:text-gray-400 text-sm'>
                                 I have changed the credentials above and provided the new credential <br /> If credential are not correct, please contact the owner of the listing.
                             </p>
                         </div>

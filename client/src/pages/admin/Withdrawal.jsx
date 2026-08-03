@@ -42,9 +42,9 @@ const Withdrawal = () => {
     return (
         <div className='h-full'>
             <AdminTitle text1='All' text2='Withdrawals' />
-            <div className='mt-10 overflow-x-auto bg-white border border-gray-200 w-full max-w-6xl rounded-xl'>
-                <table className='w-full text-sm text-left text-gray-700'>
-                    <thead className='text-xs uppercase border-b border-gray-200 bg-gray-50'>
+            <div className='mt-10 overflow-x-auto bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full max-w-6xl rounded-xl'>
+                <table className='w-full text-sm text-left text-gray-700 dark:text-gray-300'>
+                    <thead className='text-xs uppercase border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950'>
                         <tr>
                             <th className='pl-4 py-3'>#</th>
                             <th className='px-4 py-3'>User</th>
@@ -57,13 +57,13 @@ const Withdrawal = () => {
                     <tbody>
                         {requests.length === 0 ? (
                             <tr>
-                                <td colSpan='8' className='text-center py-6 text-gray-500'>
+                                <td colSpan='8' className='text-center py-6 text-gray-500 dark:text-gray-400'>
                                     No withdrawal requests found.
                                 </td>
                             </tr>
                         ) : (
                             requests.map((req, index) => (
-                                <tr key={req.id} className='border-t border-gray-200 hover:bg-indigo-50/50'>
+                                <tr key={req.id} className='border-t border-gray-200 dark:border-gray-800 hover:bg-indigo-50/50'>
                                     <td className='pl-4 py-3'>{index + 1}.</td>
                                     <td className='px-4 py-3 flex items-center gap-2'>
                                         <img src={req.user?.image} alt={req.user?.name} className='w-8 h-8 rounded-full' />
@@ -71,7 +71,7 @@ const Withdrawal = () => {
                                     </td>
                                     <td className='px-4 py-3'>{req.user?.email}</td>
                                     <td className='px-4 py-3 font-medium'>{currency}{req.amount.toLocaleString()}</td>
-                                    <td className='px-4 py-3'>{req.isWithdrawn ? <span className='text-green-600 font-medium'>Paid</span> : <span className='text-gray-500 font-medium'>Pending</span>}</td>
+                                    <td className='px-4 py-3'>{req.isWithdrawn ? <span className='text-green-600 font-medium'>Paid</span> : <span className='text-gray-500 dark:text-gray-400 font-medium'>Pending</span>}</td>
                                     <td className='px-4 py-3 text-center'>
                                         <button onClick={() => setSelectedRequest(req)} className='text-indigo-600 font-medium hover:underline'>
                                             Manage
