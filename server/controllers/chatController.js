@@ -1,10 +1,37 @@
 import prisma from "../configs/prisma.js";
+import { clerkClient } from '@clerk/express';
 
+// Helper to ensure user exists in DB
+const ensureUserExists = async (userId) => {
+  let user = await prisma.user.findUnique({ where: { id: userId } });
+  
+  if (!user) {
+    try {
+      const clerkUser = await clerkClient.users.getUser(userId);
+      user = await prisma.user.create({
+        data: {
+          id: userId,
+          email: clerkUser?.emailAddresses?.[0]?.emailAddress || '',
+          name: `${clerkUser?.firstName || ''} ${clerkUser?.lastName || ''}`.trim(),
+          image: clerkUser?.imageUrl || '',
+        }
+      });
+    } catch (err) {
+      console.error('Failed to create user record:', err);
+      throw { status: 500, message: 'Failed to create user account' };
+    }
+  }
+  
+  return user;
+};
 
 // Controller for getting chat ( creating if not exist )
 export const getChat = async (req, res) =>{
     try{
         const { userId } = await req.auth();
+        
+        // Ensure user exists in database
+        await ensureUserExists(userId);
         const { listingId, chatId } = req.body;
 
         const listing = await prisma.listing.findUnique({

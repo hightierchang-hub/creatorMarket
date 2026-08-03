@@ -1,11 +1,40 @@
 import imagekit from "../configs/imageKit.js";
 import prisma from "../configs/prisma.js";
 import fs from "fs";
+import { clerkClient } from '@clerk/express';
+
+// Helper to ensure user exists in DB
+const ensureUserExists = async (userId) => {
+  let user = await prisma.user.findUnique({ where: { id: userId } });
+  
+  if (!user) {
+    try {
+      const clerkUser = await clerkClient.users.getUser(userId);
+      user = await prisma.user.create({
+        data: {
+          id: userId,
+          email: clerkUser?.emailAddresses?.[0]?.emailAddress || '',
+          name: `${clerkUser?.firstName || ''} ${clerkUser?.lastName || ''}`.trim(),
+          image: clerkUser?.imageUrl || '',
+        }
+      });
+    } catch (err) {
+      console.error('Failed to create user record:', err);
+      throw { status: 500, message: 'Failed to create user account' };
+    }
+  }
+  
+  return user;
+};
 
 // Controller for Adding Listing to database
 export const addListing = async (req, res) =>{
     try{
         const {userId} = await req.auth();
+        
+        // Ensure user exists in database
+        await ensureUserExists(userId);
+        
         if(req.plan !== "premium"){
             const listingCount = await prisma.listing.count({
                 where: {ownerId: userId}

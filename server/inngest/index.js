@@ -205,8 +205,21 @@ const notifyAdminOnSale = inngest.createFunction(
       sellerEmail: seller?.email,
     });
 
-    // Resend accepts an array for `to`, so admins all get it in one send.
-    await sendEmail({ to: adminEmails, subject, html });
+    // Sent individually rather than one batched `to: adminEmails` call - a
+    // single bad/unverified address in the list (e.g. a placeholder that
+    // was never swapped for a real inbox, or - if you're still on Resend's
+    // onboarding@resend.dev sandbox sender - any address that isn't your
+    // own verified account email) fails Resend's validation for the WHOLE
+    // request, silently dropping the notification to every admin, not just
+    // the bad one. Sending one at a time means the good addresses still get
+    // it even if one is broken.
+    const results = await Promise.all(
+      adminEmails.map((adminEmail) => sendEmail({ to: adminEmail, subject, html }))
+    );
+    const failed = adminEmails.filter((_, i) => !results[i]);
+    if (failed.length > 0) {
+      console.log(`[notify-admin-on-sale] delivery failed for: ${failed.join(", ")}`);
+    }
   }
 );
 

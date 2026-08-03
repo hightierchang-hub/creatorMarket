@@ -2,6 +2,31 @@ import prisma from "../configs/prisma.js";
 import stripe from "../configs/stripe.js";
 import { buildEsewaFormFields, verifyEsewaSignature, checkEsewaStatus, convertUsdToNpr } from "../configs/esewa.js";
 import { inngest } from "../inngest/index.js";
+import { clerkClient } from '@clerk/express';
+
+// Helper to ensure user exists in DB
+const ensureUserExists = async (userId) => {
+  let user = await prisma.user.findUnique({ where: { id: userId } });
+  
+  if (!user) {
+    try {
+      const clerkUser = await clerkClient.users.getUser(userId);
+      user = await prisma.user.create({
+        data: {
+          id: userId,
+          email: clerkUser?.emailAddresses?.[0]?.emailAddress || '',
+          name: `${clerkUser?.firstName || ''} ${clerkUser?.lastName || ''}`.trim(),
+          image: clerkUser?.imageUrl || '',
+        }
+      });
+    } catch (err) {
+      console.error('Failed to create user record:', err);
+      throw { status: 500, message: 'Failed to create user account' };
+    }
+  }
+  
+  return user;
+};
 
 const CLIENT_URL = process.env.VITE_CLIENT_URL || "http://localhost:5173";
 const SERVER_URL = process.env.SERVER_URL || "http://localhost:3000";
@@ -93,6 +118,10 @@ export const createStripeCheckout = async (req, res) => {
     }
 
     const { userId } = await req.auth();
+    
+    // Ensure both buyer and seller exist in database
+    await ensureUserExists(userId);
+    
     const { listingId } = req.params;
 
     if (!listingId) {
@@ -104,6 +133,9 @@ export const createStripeCheckout = async (req, res) => {
     if (typeof listing.price !== 'number' || Number.isNaN(listing.price) || listing.price <= 0) {
       throw { status: 400, message: "Listing price is invalid" };
     }
+    
+    // Ensure seller exists in database
+    await ensureUserExists(listing.ownerId);
 
     const transaction = await prisma.transaction.create({
       data: {
@@ -194,6 +226,10 @@ export const initiateEsewaPayment = async (req, res) => {
     const { userId } = await req.auth();
     const { listingId } = req.params;
     const listing = await getPurchasableListing(listingId, userId);
+
+    // Ensure both buyer and seller exist in database
+    await ensureUserExists(userId);
+    await ensureUserExists(listing.ownerId);
 
     // eSewa only settles in NPR - the canonical `amount` stays in USD for
     // consistent accounting; the converted NPR figure is recorded alongside it.

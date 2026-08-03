@@ -10,6 +10,7 @@ import chatRouter from "./routes/chatRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
 import paymentRouter from "./routes/paymentRoutes.js";
 import { stripeWebhook } from "./controllers/paymentController.js";
+import { clerkWebhook } from "./controllers/clerkWebhookController.js";
 
 const app = express();
 
@@ -29,6 +30,14 @@ app.use(clerkMiddleware({ clockSkewInMs: 15000 }))
 // body, so this route MUST be registered before the global express.json()
 // below. Do not move this line down.
 app.post("/api/payment/stripe/webhook", express.raw({ type: "application/json" }), stripeWebhook);
+
+// Same deal as the Stripe webhook above - Clerk's Svix-based signature check
+// (via verifyWebhook in clerkWebhookController.js) needs the raw, untouched
+// body, so this must also be registered before express.json(). This is what
+// reliably fans clerk/user.created|updated|deleted out to Inngest for EVERY
+// account, not just whichever one happens to be configured in Clerk's
+// dashboard-side integration.
+app.post("/api/clerk/webhook", express.raw({ type: "application/json" }), clerkWebhook);
 
 app.use(express.json());
 app.use(cors({
