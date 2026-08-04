@@ -65,7 +65,7 @@ export const getChat = async (req, res) =>{
                 if(!isLastMessageSendByMe){
                     await prisma.chat.update({
                         where: { id: existingChat.id },
-                        data: { isLastMessageSendByMe: true }
+                        data: { isLastMessageRead: true }
                     })
                 }
             }
@@ -99,6 +99,9 @@ export const getAllUserChats = async (req, res) =>{
         const chats = await prisma.chat.findMany({
             where: {OR: [{ chatUserId: userId }, { ownerUserId: userId }]},
             include: { listing: true, ownerUser: true, chatUser: true },
+            orderBy: {
+                updatedAt: 'desc'
+            },
         })
 
         return res.json({ chats });

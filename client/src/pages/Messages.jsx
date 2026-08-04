@@ -47,14 +47,22 @@ const Messages = () => {
     return format(date, 'MMM d');
   }
 
+  const sortedChats = useMemo(() => {
+    return [...chats].sort((a, b) => {
+      const aTime = new Date(a.updatedAt || 0).getTime();
+      const bTime = new Date(b.updatedAt || 0).getTime();
+      return bTime - aTime;
+    });
+  }, [chats]);
+
   const filteredChats = useMemo(() => {
     const query = searchQuery.toLowerCase();
-    return chats.filter((chat)=>{
+    return sortedChats.filter((chat)=>{
       const chatUser = chat.chatUserId === user?.id ? chat?.ownerUser : chat?.chatUser;
 
       return chat.listing?.title?.toLowerCase().includes(query) || chatUser?.name?.toLowerCase().includes(query);
     })
-  },[chats, searchQuery])
+  },[sortedChats, searchQuery, user?.id])
 
   const unreadCount = useMemo(
     () => chats.filter((chat) => !chat.isLastMessageRead && chat.lastMessageSenderId !== user?.id).length,
