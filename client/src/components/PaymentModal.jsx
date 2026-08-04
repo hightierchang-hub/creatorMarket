@@ -64,9 +64,9 @@ const PaymentModal = ({ listing, onClose }) => {
               key={id}
               disabled={loadingMethod !== null}
               onClick={() => pay(id)}
-              className='flex items-center gap-3 border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 text-left hover:border-indigo-400 hover:bg-indigo-50 transition disabled:opacity-50'
+              className='flex items-center gap-3 border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 text-left hover:border-indigo-400 dark:hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition disabled:opacity-50'
             >
-              <Icon className='size-5 text-indigo-600 shrink-0' />
+              <Icon className='size-5 text-indigo-600 dark:text-indigo-400 shrink-0' />
               <span>
                 <span className='block text-sm font-medium text-gray-800 dark:text-gray-100'>
                   {loadingMethod === id ? 'Redirecting...' : label}
