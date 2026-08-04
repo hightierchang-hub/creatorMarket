@@ -11,6 +11,7 @@ import adminRouter from "./routes/adminRoutes.js";
 import paymentRouter from "./routes/paymentRoutes.js";
 import { stripeWebhook } from "./controllers/paymentController.js";
 import { clerkWebhook } from "./controllers/clerkWebhookController.js";
+import { connectWithRetry, isDbAvailable } from "./configs/prisma.js";
 
 const app = express();
 
@@ -69,6 +70,13 @@ app.use(clerkMiddleware({
 }));
 
 app.get("/", (req, res) => res.send("Server is live"));
+app.get("/health", (req, res) => {
+  if (isDbAvailable()) {
+    return res.status(200).json({ status: "ok", database: "connected" });
+  }
+
+  return res.status(503).json({ status: "degraded", database: "disconnected" });
+});
 
 app.use("/api/inngest", serve({ client: inngest, functions }));
 app.use("/api/listing", listingRouter);
@@ -76,9 +84,31 @@ app.use("/api/chat", chatRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/payment", paymentRouter);
 
-if (process.env.NODE_ENV !== "production") {
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-}
+app.use((err, req, res, next) => {
+  const status = err?.statusCode || err?.status || 500;
+  const message = err?.message || "Internal server error";
+
+  if (err?.name === "NeonDbError" || err?.code?.startsWith?.("P") || err?.code === "ECONNRESET") {
+    console.error("[server] Database error:", err);
+    return res.status(503).json({ error: "Database temporarily unavailable", details: message });
+  }
+
+  console.error("[server] Unhandled error:", err);
+  return res.status(status).json({ error: message });
+});
+
+const startServer = async () => {
+  const dbReady = await connectWithRetry();
+  if (!dbReady) {
+    console.warn("[server] Continuing to start without a live database connection.");
+  }
+
+  if (process.env.NODE_ENV !== "production") {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  }
+};
+
+startServer();
 
 export default app;
