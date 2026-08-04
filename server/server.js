@@ -16,6 +16,9 @@ const app = express();
 
 const allowedOrigins = [
   process.env.VITE_CLIENT_URL,
+  process.env.CLIENT_URL,
+  process.env.FRONTEND_URL,
+  'https://creator-market-one.vercel.app',
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:5175',
@@ -23,6 +26,12 @@ const allowedOrigins = [
   'http://127.0.0.1:5174',
   'http://127.0.0.1:5175',
 ].filter(Boolean);
+
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+
+  return allowedOrigins.includes(origin) || /https:\/\/.*\.vercel\.app$/i.test(origin) || /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin);
+};
 
 app.use(clerkMiddleware({ clockSkewInMs: 15000 }))
 
@@ -42,7 +51,7 @@ app.post("/api/clerk/webhook", express.raw({ type: "application/json" }), clerkW
 app.use(express.json());
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin) || /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)) {
+    if (isAllowedOrigin(origin)) {
       callback(null, true);
       return;
     }

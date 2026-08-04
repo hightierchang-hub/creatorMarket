@@ -39,7 +39,7 @@ const dispatch = useDispatch()
             if(!confirm) return;
 
             const token = await getToken();
-            const { data } = await api.ppst('/api/listing/withdraw', {account,amount: parseInt(amount)}, 
+            const { data } = await api.post('/api/listing/withdraw', {account,amount: parseInt(amount)}, 
                 {headers: {Authorization: `Bearer ${token}`} })
                 toast.success(data.message)
                 dispatch(getAllUserListing({getToken}))
