@@ -17,7 +17,7 @@ const plans = () => {
     plan for your content creation needs.</p>
   </div>
   <div className='mt-14'>
-    <PricingTable /> 
+    <PricingTable newSubscriptionRedirectUrl='/marketplace' />
   </div>
 </motion.div>
   )

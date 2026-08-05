@@ -3,7 +3,7 @@ import Logo from './Logo'
 import ThemeToggle from './ThemeToggle'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import { MenuIcon, MessageCircleMoreIcon, XIcon, GripIcon, ListIcon, BoxIcon, ShieldCheckIcon, SunIcon, MoonIcon } from 'lucide-react'
+import { MenuIcon, MessageCircleMoreIcon, XIcon, GripIcon, ListIcon, BoxIcon, ShieldCheckIcon, SunIcon, MoonIcon, SettingsIcon, LogOutIcon } from 'lucide-react'
 import { useUser, useClerk, useAuth, UserButton } from '@clerk/clerk-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from '../context/ThemeContext'
@@ -14,7 +14,7 @@ const navLinkClass = 'relative py-1'
 const Navbar = () => {
 
   const { isSignedIn } = useUser()
-  const { openSignIn } = useClerk()
+  const { openSignIn, openUserProfile, signOut } = useClerk()
   const { getToken } = useAuth()
   const { isDark, toggleTheme } = useTheme()
   const location = useLocation()
@@ -190,6 +190,9 @@ const Navbar = () => {
                          <Link to='/marketplace' onClick={() => setMenuOpen(false)}> Marketplace </Link>
                           <button onClick={() => isSignedIn ? navigate('/messages') : openSignIn()}>Messages</button>
                           <button onClick={() => isSignedIn ? navigate('/my-listings') : openSignIn()}>My Listings</button>
+                          {isSignedIn && (
+                            <button onClick={() => navigate('/my-orders')}>My Orders</button>
+                          )}
                           {isSignedIn && isAdmin && (
                             <Link
                               to='/admin'
@@ -205,6 +208,23 @@ const Navbar = () => {
                             <span className='text-gray-500 dark:text-gray-400'>Theme</span>
                             <ThemeToggle />
                           </div>
+
+                          {isSignedIn && (
+                            <div className='flex flex-col items-center gap-4'>
+                              <button
+                                onClick={() => { setMenuOpen(false); openUserProfile() }}
+                                className='flex items-center gap-2 text-base font-normal text-gray-700 dark:text-gray-300'
+                              >
+                                <SettingsIcon className='size-4' /> Manage account
+                              </button>
+                              <button
+                                onClick={() => { setMenuOpen(false); signOut(() => navigate('/')) }}
+                                className='flex items-center gap-2 text-base font-normal text-red-500'
+                              >
+                                <LogOutIcon className='size-4' /> Sign out
+                              </button>
+                            </div>
+                          )}
 
                           {!isSignedIn && (
                             <button

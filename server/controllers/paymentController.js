@@ -28,8 +28,36 @@ const ensureUserExists = async (userId) => {
   return user;
 };
 
-const CLIENT_URL = process.env.VITE_CLIENT_URL || "http://localhost:5173";
-const SERVER_URL = process.env.SERVER_URL || "http://localhost:3000";
+// Accept any of these env var names (checked in this order) and strip a
+// trailing slash so `${CLIENT_URL}/payment/success` never becomes a
+// double-slash URL. If NONE are set we fall back to localhost so local dev
+// keeps working, but we log loudly in production since that fallback is
+// almost certainly a misconfiguration (this was the cause of payments
+// redirecting to localhost after a successful charge).
+const resolveUrl = (...candidates) => {
+  const found = candidates.find((v) => v && v.trim());
+  return found ? found.trim().replace(/\/+$/, "") : null;
+};
+
+const CLIENT_URL =
+  resolveUrl(process.env.CLIENT_URL, process.env.VITE_CLIENT_URL, process.env.FRONTEND_URL) ||
+  "http://localhost:5173";
+const SERVER_URL = resolveUrl(process.env.SERVER_URL) || "http://localhost:3000";
+
+if (process.env.NODE_ENV === "production") {
+  if (CLIENT_URL.includes("localhost")) {
+    console.error(
+      "[payment] CLIENT_URL is not set in production - payment redirects will point to localhost. " +
+        "Set CLIENT_URL (or VITE_CLIENT_URL) in your server's Vercel project to your deployed frontend URL, e.g. https://your-app.vercel.app"
+    );
+  }
+  if (SERVER_URL.includes("localhost")) {
+    console.error(
+      "[payment] SERVER_URL is not set in production - eSewa callbacks will point to localhost. " +
+        "Set SERVER_URL in your server's Vercel project to this server's own deployed URL."
+    );
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Shared helpers

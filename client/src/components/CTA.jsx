@@ -1,7 +1,21 @@
 import React from 'react'
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
+import { useClerk, useUser } from '@clerk/clerk-react'
 
 const CTA = () => {
+  const navigate = useNavigate()
+  const { openSignIn } = useClerk()
+  const { isSignedIn } = useUser()
+
+  const handleGetStarted = () => {
+    if (isSignedIn) {
+      navigate('/marketplace')
+    } else {
+      openSignIn({ afterSignInUrl: '/marketplace', afterSignUpUrl: '/marketplace' })
+    }
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -35,7 +49,7 @@ const CTA = () => {
                 </h2>
                 <p className="text-slate-500 dark:text-slate-400 mt-2 max-w-lg max-md:text-sm">We are the leading social media marketplace that connects brands with their 
                     customers With our user-friendly interface.</p>
-                <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} type="button" className="bg-linear-to-r from-purple-600 to-blue-500 text-white text-sm px-5 py-2.5 rounded-xl 
+                <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} type="button" onClick={handleGetStarted} className="bg-linear-to-r from-purple-600 to-blue-500 text-white text-sm px-5 py-2.5 rounded-xl 
                 font-medium mt-4 transition-all duration-300"> 
                     Get Started Today
                 </motion.button>
