@@ -127,7 +127,24 @@ export const getTransactionStatus = async (req, res) => {
       where: { id: transactionId, userId },
     });
 
-    if (!transaction) return res.status(404).json({ message: "Transaction not found" });
+    if (!transaction) {
+      // Disambiguate two very different failure modes without leaking data
+      // to the client: (a) the row genuinely doesn't exist in whichever DB
+      // this request landed on - usually a Neon preview-branch / stale
+      // deployment mismatch - vs (b) it exists but for a different user.
+      const anyOwner = await prisma.transaction.findUnique({
+        where: { id: transactionId },
+        select: { userId: true },
+      });
+      if (!anyOwner) {
+        console.warn(`[payment/status] No transaction row exists anywhere for id=${transactionId}. ` +
+          `If this ID was just returned by checkout, this request is hitting a different database than checkout wrote to ` +
+          `(check for Neon preview-branch DBs / a stale deployment).`);
+      } else {
+        console.warn(`[payment/status] transaction ${transactionId} exists but belongs to a different user than the requester.`);
+      }
+      return res.status(404).json({ message: "Transaction not found" });
+    }
     return res.json({ isPaid: transaction.isPaid, transaction });
   } catch (error) {
     console.log(error);
