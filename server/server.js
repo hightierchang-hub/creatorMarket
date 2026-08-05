@@ -50,6 +50,7 @@ app.post("/api/payment/stripe/webhook", express.raw({ type: "application/json" }
 app.post("/api/clerk/webhook", express.raw({ type: "application/json" }), clerkWebhook);
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cors({
   origin: (origin, callback) => {
     if (isAllowedOrigin(origin)) {

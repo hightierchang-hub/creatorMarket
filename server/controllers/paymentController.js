@@ -320,10 +320,19 @@ export const initiateEsewaPayment = async (req, res) => {
 // eSewa's status API to confirm the transaction is COMPLETE.
 export const esewaSuccessCallback = async (req, res) => {
   try {
-    const encoded = req.query.data;
-    if (!encoded) return res.redirect(`${CLIENT_URL}/payment/cancel?reason=missing_data`);
+    const encoded = req.body?.data || req.query?.data;
+    const decoded = encoded && typeof encoded === "string"
+      ? JSON.parse(Buffer.from(encoded, "base64").toString("utf-8"))
+      : req.body?.signed_field_names && req.body?.signature
+      ? req.body
+      : req.query?.signed_field_names && req.query?.signature
+      ? req.query
+      : null;
 
-    const decoded = JSON.parse(Buffer.from(encoded, "base64").toString("utf-8"));
+    if (!decoded) {
+      console.log("eSewa callback missing payload", { body: req.body, query: req.query });
+      return res.redirect(`${CLIENT_URL}/payment/cancel?reason=missing_data`);
+    }
 
     if (!verifyEsewaSignature(decoded)) {
       console.log("eSewa callback signature mismatch", decoded);
@@ -333,22 +342,30 @@ export const esewaSuccessCallback = async (req, res) => {
     const transaction = await prisma.transaction.findFirst({
       where: { id: decoded.transaction_uuid, paymentMethod: "esewa" },
     });
-    if (!transaction) return res.redirect(`${CLIENT_URL}/payment/cancel?reason=not_found`);
+    if (!transaction) {
+      console.log("eSewa callback transaction not found", { decoded });
+      return res.redirect(`${CLIENT_URL}/payment/cancel?reason=not_found`);
+    }
 
     const statusCheck = await checkEsewaStatus({
-      productCode: decoded.product_code,
-      transactionUuid: decoded.transaction_uuid,
-      totalAmount: decoded.total_amount,
+      productCode: decoded.product_code || decoded.productCode,
+      transactionUuid: decoded.transaction_uuid || decoded.transactionUuid,
+      totalAmount: decoded.total_amount || decoded.totalAmount,
     });
 
-    if (decoded.status === "COMPLETE" && statusCheck.status === "COMPLETE") {
+    if (decoded.status === "COMPLETE" && statusCheck?.status === "COMPLETE") {
       await finalizeTransaction(transaction.id);
       return res.redirect(`${CLIENT_URL}/payment/success?transactionId=${transaction.id}`);
     }
 
+    console.log("eSewa callback not complete", {
+      decodedStatus: decoded.status,
+      statusCheck,
+      transactionId: transaction.id,
+    });
     return res.redirect(`${CLIENT_URL}/payment/cancel?reason=not_completed`);
   } catch (error) {
-    console.log(error);
+    console.log("eSewa callback error:", error);
     return res.redirect(`${CLIENT_URL}/payment/cancel?reason=error`);
   }
 };

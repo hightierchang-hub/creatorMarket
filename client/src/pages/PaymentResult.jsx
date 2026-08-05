@@ -28,6 +28,7 @@ const PaymentResult = () => {
   const [searchParams] = useSearchParams()
   const transactionId = searchParams.get('transactionId')
   const isCancelPath = location.pathname.includes('cancel')
+  const reason = searchParams.get('reason') || ''
   const { getToken, isLoaded, isSignedIn } = useAuth()
   const { openSignIn } = useClerk()
 
@@ -84,6 +85,15 @@ const PaymentResult = () => {
     }
   }, [getToken, isCancelPath, isLoaded, isSignedIn, transactionId])
 
+  const reasonMessages = {
+    missing_data: 'No payment data was returned from the provider.',
+    signature: 'The payment provider callback could not be verified.',
+    not_found: 'The payment record could not be found on our server.',
+    not_completed: 'The transaction was not completed by the provider.',
+    error: 'There was an error confirming your payment.',
+  }
+  const reasonText = reasonMessages[reason] || (reason ? `Payment issue: ${reason.replace(/_/g, ' ')}` : '')
+
   return (
     <div className='min-h-screen flex flex-col items-center justify-center gap-4 px-6 text-center'>
       {status === 'checking' ? (
@@ -130,6 +140,9 @@ const PaymentResult = () => {
             Your payment was cancelled or could not be confirmed. No charge should have gone through - try again or
             use a different method.
           </p>
+          {reasonText ? (
+            <p className='text-sm text-red-500'>{reasonText}</p>
+          ) : null}
         </>
       )}
       <Link to='/my-orders' className='mt-4 bg-indigo-600 text-white px-6 py-2 rounded-md text-sm font-medium'>

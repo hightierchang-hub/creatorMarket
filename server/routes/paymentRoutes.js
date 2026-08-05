@@ -20,7 +20,7 @@ paymentRouter.post("/stripe/checkout/:listingId", protect, createStripeCheckout)
 // eSewa - callback routes are public since eSewa itself redirects the
 // user's browser here (no auth header available on that request)
 paymentRouter.post("/esewa/checkout/:listingId", protect, initiateEsewaPayment);
-paymentRouter.get("/esewa/callback/success", esewaSuccessCallback);
-paymentRouter.get("/esewa/callback/failure", esewaFailureCallback);
+paymentRouter.route("/esewa/callback/success").get(esewaSuccessCallback).post(esewaSuccessCallback);
+paymentRouter.route("/esewa/callback/failure").get(esewaFailureCallback).post(esewaFailureCallback);
 
 export default paymentRouter;
