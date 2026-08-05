@@ -32,7 +32,6 @@ const syncUserCreation = inngest.createFunction(
       });
       return;
     }
-
     await prisma.user.create({
       data: {
         id: data.id,
