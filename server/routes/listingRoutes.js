@@ -5,11 +5,10 @@ import upload from "../configs/multer.js";
 
 const listingRouter = express.Router();
 
-// More specific routes MUST come before generic parameter routes
-listingRouter.get('/public', getAllPublicListing)
-listingRouter.get('/user',protect ,getAllUserListings)
 listingRouter.post('/',upload.array("images", 5),protect, addListing)
 listingRouter.put('/',upload.array("images", 5),protect, updateListing)
+listingRouter.get('/public', getAllPublicListing)
+listingRouter.get('/user',protect ,getAllUserListings)
 listingRouter.put('/:id/status',protect ,toggleStatus)
 listingRouter.delete('/:listingId',protect ,deleteUserListing)
 listingRouter.post('/add-credential',protect ,addCredential)
