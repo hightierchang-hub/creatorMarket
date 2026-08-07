@@ -81,9 +81,15 @@ const Navbar = () => {
                   }`}
                 >
 
-                  <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} className='flex-none pr-2 sm:pr-3'>
-                    <Logo onClick={() => { navigate('/'); scrollTo(0, 0) }} className="h-14 sm:h-16 w-auto cursor-pointer" />
-                  </motion.div>
+                  <motion.button
+                    type="button"
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => { navigate('/'); scrollTo(0, 0) }}
+                    className='flex-none pr-2 sm:pr-3 inline-flex items-center justify-center cursor-pointer'
+                  >
+                    <Logo className="h-14 sm:h-16 w-auto" />
+                  </motion.button>
 
                     {/* Desktop Menu */}
                     <div className='hidden sm:flex absolute inset-x-0 justify-center'>
