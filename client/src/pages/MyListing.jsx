@@ -24,6 +24,7 @@ const MyListing = () => {
 
   const [showCredentialSubmission, setShowCredentialSubmission] = useState(null)
   const [showWithdrawal, setShowWithdrawal] = useState(null)
+  const [statusFilter, setStatusFilter] = useState('all')
 
   const totalValue = userListings.reduce((sum, listing) => sum + (listing.price || 0), 0);
   const activeListings = userListings.filter(listing => listing.status === 'active').length;
@@ -72,6 +73,26 @@ const MyListing = () => {
         return "text-gray-800";
     }
   }
+
+  // "unlisted" = anything that's neither active nor sold (inactive, ban, pending, etc.)
+  const filteredListings = statusFilter === 'all'
+    ? userListings
+    : statusFilter === 'unlisted'
+      ? userListings.filter(l => l.status !== 'active' && l.status !== 'sold')
+      : userListings.filter(l => l.status === statusFilter);
+
+  const activeListingsGroup = filteredListings
+    .filter(l => l.status === 'active')
+    .sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+  const unlistedListingsGroup = filteredListings.filter(l => l.status !== 'active' && l.status !== 'sold');
+  const soldListingsGroup = filteredListings.filter(l => l.status === 'sold');
+
+  const statusFilters = [
+    { key: 'all', label: 'All' },
+    { key: 'active', label: 'Active' },
+    { key: 'unlisted', label: 'Unlisted' },
+    { key: 'sold', label: 'Sold' },
+  ];
 
   const toggleStatus = async (listingId) => {
     try{
@@ -129,6 +150,101 @@ const MyListing = () => {
       }
     }
   }
+
+  const renderListingCard = (listing) => (
+    <div key={listing.id}
+    className='bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 hover:shadow-lg shadow:gray-200/70 transition-blur'>
+        <div className='p-6'>
+          <div className='flex items-start gap-4 justify-between mb-4'>
+            {platformIcons[listing.platform]}
+            <div className='flex-1'>
+              <div className='flex justify-between items-start'>
+                <h3 className='text-lg font-semibold text-gray-800 dark:text-gray-100'>{listing.title}</h3>
+                <div className='flex items-center gap-2'>
+                  <div className='relative group'>
+                    <LockIcon size={14}/>
+                    <div className='invisible group-hover:visible absolute right-0 top-0 pt-4.5 z-10'>
+                        <div className='bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 text-xs font-semibold rounded border border-gary-200 p-2 px-3'>
+                          {!listing.isCredentialSubmitted && (
+                            <>
+                            <button onClick={()=> setShowCredentialSubmission(listing)} className='flex items-center gap-2 text-nowrap'>Add Credentials</button>
+                            <hr className='border-gray-200 dark:border-gray-800 my-2'/>
+                            </>
+                          )}
+                          <button className='text-nowrap'>
+                            Status :{" "}
+                            <span className={
+                              listing.isCredentialSubmitted
+                              ? listing.isCredentialVerified
+                              ? listing.isCredentialChanged
+                              ? "text-green-600" : "text-indigo-600" : "text-slate-600" : "text-red-600"
+                            }>
+                              {listing.isCredentialSubmitted
+                              ? listing.isCredentialVerified
+                            ? listing.isCredentialChanged
+                          ? "Changed": "Verified" : "Submitted" : "Not Submitted" }
+                            </span>
+                          </button>
+                        </div>
+                    </div>
+                  </div>
+                  <div>
+                    {listing.status === "active" && (
+                      <StarIcon
+                      onClick={()=>toggleFeatured(listing.id, listing.featured)} 
+                      size={18}
+                      title={listing.featured ? "Remove from featured" : "Mark as featured"}
+                      className={`text-yellow-500 cursor-pointer ${listing.featured && "fill-yellow-500"}`}/>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <p className='text-sm text-gray-600 dark:text-gray-400'><span>@{listing.username}</span></p>
+            </div>
+          </div>
+
+          <div className='space-y-4'>
+            <div className='grid grid-cols-2 gap-2 text-sm'>
+              <div className='flex items-center space-x-2'>
+                <Users className='size-4 text-gray-400 dark:text-gray-500'/>
+                <span>{formatNumber(listing.followers_count)} followers</span>
+              </div>
+              <span className={`flex items-center justify-end gap-1 ${getStatusColor(listing.status)}`}>
+                {getStatusIcon(listing.status)}{" "} <span>{listing.status}                        
+                </span>
+              </span>
+              <div className='flex items-center space-x-2'>
+                <TrendingUp className='size-4 text-gray-400 dark:text-gray-500'/>
+                <span>{listing.engagement_rate}%engagement</span>
+              </div>
+            </div>
+
+              <div className='flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-800'>
+                <span className='text-2xl font-bold text-gray-800 dark:text-gray-100'>
+                    {currency}
+                    {listing.price.toLocaleString()}
+                </span>
+                <div className='flex items-center space-x-2'>
+                    {listing.status !== "sold" && (
+                      <button onClick={()=>deleteListing(listing.id)} className='p-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-red-500'>
+                        <TrashIcon className='size-4'/>
+                      </button>
+                    )}
+                    <button onClick={()=>navigate(`/edit-listing/${listing.id}`)} className='p-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600'>
+                      <Edit className='size-4'/>
+                    </button>
+
+                    <button onClick={()=>toggleStatus(listing.id)} className='p-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-purple-600'>
+                      {listing.status === "active" && (<EyeOffIcon className='size-4'/>)}
+                      {listing.status !== "active" && (<EyeIcon className='size-4'/>)}
+                    </button>
+                </div>
+              </div>
+
+          </div>
+        </div>
+    </div>
+  )
 
   return (
     <div className='px-6 md:px-16 lg:px-24 xl:px-32 pt-8'>
@@ -194,102 +310,42 @@ const MyListing = () => {
       )
     :
     (
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-          {[...userListings].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0)).map((listing)=>(
-            <div key={listing.id}
-            className='bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 hover:shadow-lg shadow:gray-200/70 transition-blur'>
-                <div className='p-6'>
-                  <div className='flex items-start gap-4 justify-between mb-4'>
-                    {platformIcons[listing.platform]}
-                    <div className='flex-1'>
-                      <div className='flex justify-between items-start'>
-                        <h3 className='text-lg font-semibold text-gray-800 dark:text-gray-100'>{listing.title}</h3>
-                        <div className='flex items-center gap-2'>
-                          <div className='relative group'>
-                            <LockIcon size={14}/>
-                            <div className='invisible group-hover:visible absolute right-0 top-0 pt-4.5 z-10'>
-                                <div className='bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 text-xs font-semibold rounded border border-gary-200 p-2 px-3'>
-                                  {!listing.isCredentialSubmitted && (
-                                    <>
-                                    <button onClick={()=> setShowCredentialSubmission(listing)} className='flex items-center gap-2 text-nowrap'>Add Credentials</button>
-                                    <hr className='border-gray-200 dark:border-gray-800 my-2'/>
-                                    </>
-                                  )}
-                                  <button className='text-nowrap'>
-                                    Status :{" "}
-                                    <span className={
-                                      listing.isCredentialSubmitted
-                                      ? listing.isCredentialVerified
-                                      ? listing.isCredentialChanged
-                                      ? "text-green-600" : "text-indigo-600" : "text-slate-600" : "text-red-600"
-                                    }>
-                                      {listing.isCredentialSubmitted
-                                      ? listing.isCredentialVerified
-                                    ? listing.isCredentialChanged
-                                  ? "Changed": "Verified" : "Submitted" : "Not Submitted" }
-                                    </span>
-                                  </button>
-                                </div>
-                            </div>
-                          </div>
-                          <div>
-                            {listing.status === "active" && (
-                              <StarIcon
-                              onClick={()=>toggleFeatured(listing.id, listing.featured)} 
-                              size={18}
-                              title={listing.featured ? "Remove from featured" : "Mark as featured"}
-                              className={`text-yellow-500 cursor-pointer ${listing.featured && "fill-yellow-500"}`}/>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      <p className='text-sm text-gray-600 dark:text-gray-400'><span>@{listing.username}</span></p>
-                    </div>
-                  </div>
-
-                  <div className='space-y-4'>
-                    <div className='grid grid-cols-2 gap-2 text-sm'>
-                      <div className='flex items-center space-x-2'>
-                        <Users className='size-4 text-gray-400 dark:text-gray-500'/>
-                        <span>{formatNumber(listing.followers_count)} followers</span>
-                      </div>
-                      <span className={`flex items-center justify-end gap-1 ${getStatusColor(listing.status)}`}>
-                        {getStatusIcon(listing.status)}{" "} <span>{listing.status}                        
-                        </span>
-                      </span>
-                      <div className='flex items-center space-x-2'>
-                        <TrendingUp className='size-4 text-gray-400 dark:text-gray-500'/>
-                        <span>{listing.engagement_rate}%engagement</span>
-                      </div>
-                    </div>
-
-                      <div className='flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-800'>
-                        <span className='text-2xl font-bold text-gray-800 dark:text-gray-100'>
-                            {currency}
-                            {listing.price.toLocaleString()}
-                        </span>
-                        <div className='flex items-center space-x-2'>
-                            {listing.status !== "sold" && (
-                              <button onClick={()=>deleteListing(listing.id)} onClick={()=>deleteListing(listing.id)} className='p-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-red-500'>
-                                <TrashIcon className='size-4'/>
-                              </button>
-                            )}
-                            <button onClick={()=>navigate(`/edit-listing/${listing.id}`)} className='p-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600'>
-                              <Edit className='size-4'/>
-                            </button>
-
-                            <button onClick={()=>toggleStatus(listing.id)} className='p-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-purple-600'>
-                              {listing.status === "active" && (<EyeOffIcon className='size-4'/>)}
-                              {listing.status !== "active" && (<EyeIcon className='size-4'/>)}
-                            </button>
-                        </div>
-                      </div>
-
-                  </div>
-                </div>
-            </div>
+      <>
+        {/* Status filter bar */}
+        <div className='flex items-center gap-2 mb-6'>
+          {statusFilters.map((f) => (
+            <button
+              key={f.key}
+              onClick={() => setStatusFilter(f.key)}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                statusFilter === f.key
+                  ? 'bg-indigo-600 border-indigo-600 text-white'
+                  : 'border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+              }`}
+            >
+              {f.label}
+            </button>
           ))}
-      </div>
+        </div>
+
+        {filteredListings.length === 0 ? (
+          <div className='bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-12 text-center'>
+            <p className='text-gray-600 dark:text-gray-400'>No listings match this filter.</p>
+          </div>
+        ) : (
+          <div className='space-y-10'>
+            {activeListingsGroup.length > 0 && (
+              <ListingSection title='Active' listings={activeListingsGroup} renderListingCard={renderListingCard} />
+            )}
+            {unlistedListingsGroup.length > 0 && (
+              <ListingSection title='Unlisted' listings={unlistedListingsGroup} renderListingCard={renderListingCard} />
+            )}
+            {soldListingsGroup.length > 0 && (
+              <ListingSection title='Sold' listings={soldListingsGroup} renderListingCard={renderListingCard} />
+            )}
+          </div>
+        )}
+      </>
     )}
 
     {showCredentialSubmission && (
@@ -309,5 +365,18 @@ const MyListing = () => {
     </div>
   )
 }
+
+// Groups listings under a section heading (Active / Unlisted / Sold).
+const ListingSection = ({ title, listings, renderListingCard }) => (
+  <div>
+    <div className='flex items-center gap-2 mb-4'>
+      <h2 className='text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400'>{title}</h2>
+      <span className='text-xs text-gray-400 dark:text-gray-500'>({listings.length})</span>
+    </div>
+    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+      {listings.map((listing) => renderListingCard(listing))}
+    </div>
+  </div>
+)
 
 export default MyListing
